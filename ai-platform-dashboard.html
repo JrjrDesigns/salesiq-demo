@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Intelligence Platform — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+  :root {
+    --white: #ffffff;
+    --off: #f0f4f8;
+    --ink: #0f2340;
+    --mid: #5a7a9a;
+    --rule: #d0dce8;
+    --red: #c0392b;
+    --orange: #2980b9;
+    --green: #1a6a9a;
+    --blue: #1a3a5c;
+    --yellow: #4a90c4;
+    --red-light: #fef1f0;
+    --orange-light: #eaf4fb;
+    --green-light: #e8f4fa;
+    --blue-light: #e0edf7;
+    --yellow-light: #eaf4fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--off);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  .nav {
+    background: #0f2340;
+    display: flex;
+    align-items: stretch;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #1a3a5c;
+    white-space: nowrap;
+  }
+
+  .nav-tabs {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+  }
+
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a9ab8;
+    padding: 0 1.2rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    border-right: 1px solid #1a3a5c;
+  }
+
+  .nav-tab:hover { color: var(--white); background: #1a3a5c; }
+
+  .nav-tab.active {
+    color: var(--white);
+    border-bottom-color: #4a90c4;
+    background: #1a3a5c;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    padding: 0 1.2rem;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  .nav-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4a90c4;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* DEMO BANNER */
+  .demo-banner {
+    background: var(--yellow-light);
+    border-bottom: 2px solid var(--yellow);
+    padding: 0.4rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 3rem;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .page-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* KPI ROW */
+  .kpi-row {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .kpi-4 { grid-template-columns: repeat(4, 1fr); }
+  .kpi-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .kpi-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--ink);
+    padding: 1rem 1.2rem;
+  }
+
+  .kpi-card.green { border-top-color: #1a6a9a; }
+  .kpi-card.blue { border-top-color: #1a3a5c; }
+  .kpi-card.orange { border-top-color: #4a90c4; }
+  .kpi-card.red { border-top-color: #c0392b; }
+  .kpi-card.yellow { border-top-color: #2980b9; }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.4rem;
+  }
+
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--mid);
+  }
+
+  .kpi-sub .up { color: var(--green); font-weight: 600; }
+  .kpi-sub .down { color: var(--red); font-weight: 600; }
+  .kpi-sub .warn { color: var(--orange); font-weight: 600; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .span-2 { grid-column: span 2; }
+  .span-3 { grid-column: span 3; }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem 0.7rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+  .tag-orange { background: var(--orange-light); color: var(--orange); }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .tag-yellow { background: var(--yellow-light); color: var(--yellow); }
+  .tag-ink { background: var(--ink); color: var(--white); }
+
+  .card-body { padding: 0.8rem 1rem; }
+  .card-body-flush { padding: 0; }
+
+  /* TABLE */
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .tbl th {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    padding: 0.45rem 0.7rem;
+    text-align: left;
+    border-bottom: 2px solid var(--ink);
+    background: var(--off);
+    white-space: nowrap;
+  }
+
+  .tbl td {
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: var(--off); }
+
+  .mono { font-family: 'DM Mono', monospace; font-size: 11px; }
+  .bold { font-weight: 600; }
+  .c-green { color: var(--green); }
+  .c-blue { color: var(--blue); }
+  .c-red { color: var(--red); }
+  .c-orange { color: var(--orange); }
+  .c-mid { color: var(--mid); }
+
+  /* PILL */
+  .pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    white-space: nowrap;
+  }
+
+  .pill-green { background: var(--green-light); color: var(--green); }
+  .pill-blue { background: var(--blue-light); color: var(--blue); }
+  .pill-orange { background: var(--orange-light); color: var(--orange); }
+  .pill-red { background: var(--red-light); color: var(--red); }
+  .pill-yellow { background: var(--yellow-light); color: var(--yellow); }
+  .pill-ink { background: var(--ink); color: var(--white); }
+
+  /* STAGE BAR */
+  .stage-row {
+    display: grid;
+    grid-template-columns: 1.1in 1fr 0.75in 0.5in;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .stage-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .bar-track {
+    height: 7px;
+    background: var(--off);
+    overflow: hidden;
+  }
+
+  .bar-fill { height: 100%; transition: width 1.2s ease; }
+
+  .stage-amt { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; text-align: right; }
+  .stage-ct { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); text-align: right; }
+
+  /* ALERT CARD */
+  .alert-card {
+    border-left: 4px solid var(--red);
+    background: var(--white);
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.6rem;
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .alert-card.warning { border-left-color: var(--orange); }
+  .alert-card.info { border-left-color: var(--blue); }
+  .alert-card.success { border-left-color: var(--green); }
+
+  .alert-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+  }
+
+  .alert-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .alert-body {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+
+  .alert-body strong { color: var(--ink); font-weight: 600; }
+
+  /* REP CARD */
+  .rep-card {
+    border: 1px solid var(--rule);
+    padding: 0.8rem;
+    background: var(--white);
+  }
+
+  .rep-name { font-weight: 600; font-size: 13px; margin-bottom: 0.1rem; }
+
+  .rep-territory {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.6rem;
+  }
+
+  .rep-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 11px;
+  }
+
+  .rep-stat-label { color: var(--mid); }
+  .rep-stat-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  .wl-bar { display: flex; height: 4px; margin-top: 0.5rem; }
+  .wl-w { background: var(--green); }
+  .wl-l { background: var(--red); }
+
+  /* CHART */
+  .chart-wrap { position: relative; padding: 0.5rem 0; }
+
+  /* PROSPECT SCORE */
+  .score-bar-track { height: 6px; background: var(--off); flex: 1; }
+  .score-bar-fill { height: 100%; background: var(--blue); }
+
+  /* METRIC ROW */
+  .metric-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { font-size: 12px; color: var(--mid); flex: 1; }
+  .metric-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+
+  /* FOOTER */
+  .dash-footer {
+    margin-top: 2rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--mid);
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-4, .kpi-5 { grid-template-columns: 1fr 1fr; }
+    .kpi-3 { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .span-2, .span-3 { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ── N8N WEBHOOK URL ───────────────────────────────────────────────────────────
+const N8N_URL = "https://james-francis.app.n8n.cloud/webhook/data";
+const POLL_INTERVAL = 5000; // refresh every 5 seconds
+
+// ── FALLBACK DATASET (used if fetch fails) ────────────────────────────────────
+const DATA = {
+  epicor: {
+    customers: [
+      { CustomerID: "CALTEC-CRYO", Name: "Calvert Institute of Technology - Cryogenics Lab", Type: "Domestic", Territory: "West", Salesperson: "D. Harmon", CompanySegment: "University Research" },
+      { CustomerID: "ARGONNE-NL", Name: "Argonne National Research Laboratory", Type: "Domestic", Territory: "East", Salesperson: "J. Harmon", CompanySegment: "National Laboratory" },
+      { CustomerID: "RHEINTECH-DE", Name: "Rheintech Scientific GmbH", Type: "Dealer", Territory: "Europe", Salesperson: "M. Brandt", CompanySegment: "Dealer" },
+      { CustomerID: "ENDUSER-HELMHOLTZ", Name: "Helmholtz Zentrum fur Materialien", Type: "Domestic", Territory: "Europe", Salesperson: "M. Brandt", CompanySegment: "National Laboratory" },
+      { CustomerID: "VECTRONIX-DEF", Name: "Vectronix Defense Research Inc", Type: "Domestic", Territory: "East", Salesperson: "J. Harmon", CompanySegment: "Defense and Aerospace" }
+    ],
+    sales_orders: [
+      { SalesOrderNumber: "SO-28841", CustomerID: "CALTEC-CRYO", OrderDate: "2025-03-10", ShipBy: "2025-04-07", OrderTotal: 3600, ReasonForSale: "Calibration Service" },
+      { SalesOrderNumber: "SO-28855", CustomerID: "RHEINTECH-DE", OrderDate: "2025-03-14", ShipBy: "2025-04-25", OrderTotal: 17480, ReasonForSale: "New Unit Sale - Dealer" },
+      { SalesOrderNumber: "SO-28871", CustomerID: "VECTRONIX-DEF", OrderDate: "2025-03-18", ShipBy: "2025-05-10", OrderTotal: 42000, ReasonForSale: "New Unit Sale - Defense" }
+    ],
+    jobs: [
+      { JobNumber: "JB-44821", Part: "CX-1070-BO", Description: "Cernox 1070 Uncalibrated - BO Package", LinkedOrder: "SO-28871", Status: "OPEN", OriginalProductionQty: 20, Completed: 4, Due: "2025-05-12", ShipByDate: "2025-05-10", Planner: "R. Okafor" },
+      { JobNumber: "JB-44798", Part: "F41-TM", Description: "F41 Teslameter - Single Axis", LinkedOrder: 0, Status: "CLOSED", OriginalProductionQty: 10, Completed: 10, Due: "2025-03-15", ShipByDate: "", Planner: "S. Kowalski" }
+    ],
+    inventory: [
+      { PartNum: "CX-1050-SD", PartDescription: "Cernox 1050 Sensor - SD Package", OnHandQty: 22, AllocatedQty: 6, AvailableQty: 16, LeadTimeDays: 30 },
+      { PartNum: "CX-1070-BO", PartDescription: "Cernox 1070 Sensor - BO Package", OnHandQty: 4, AllocatedQty: 20, AvailableQty: -16, LeadTimeDays: 45 },
+      { PartNum: "F41-TM", PartDescription: "F41 Teslameter - Single Axis", OnHandQty: 4, AllocatedQty: 6, AvailableQty: -2, LeadTimeDays: 21 },
+      { PartNum: "336-TC", PartDescription: "Model 336 Temperature Controller", OnHandQty: 6, AllocatedQty: 2, AvailableQty: 4, LeadTimeDays: 14 },
+      { PartNum: "PT-102-CU", PartDescription: "Platinum RTD Sensor PT-102", OnHandQty: 48, AllocatedQty: 10, AvailableQty: 38, LeadTimeDays: 10 }
+    ]
+  },
+  salesforce: {
+    inquiries: [
+      { InquiryID: "IQ-02287", Company: "Calvert Institute of Technology Cryogenics Lab", InquiringAbout: "Calibration", Products: "Cernox 1050 Sensor CX-1050-SD", InquiryRating: "Hot", IsCurrentCustomer: true, Owner: "D. Harmon", CreatedDate: "2025-03-09" },
+      { InquiryID: "IQ-02301", Company: "Argonne National Research Laboratory", InquiringAbout: "New Unit Purchase", Products: "F41 Teslameter", InquiryRating: "Hot", IsCurrentCustomer: true, Owner: "J. Harmon", CreatedDate: "2025-03-20" }
+    ],
+    leads: [
+      { LeadID: "LD-00441", Name: "Dr Evelyn Marsh", Company: "Nordvik Institute for Quantum Research", LeadStatus: "Working", Territory: "East", LeadOwner: "J. Harmon", DaysSinceCreated: 18, CampaignName: "Dilution Refrigerator Instrumentation Spring 2025" },
+      { LeadID: "LD-00448", Name: "Dr Jin-Ho Park", Company: "Seoul Advanced Materials Institute", LeadStatus: "New", Territory: "Asia", LeadOwner: "K. Tanaka", DaysSinceCreated: 5, CampaignName: "Asia Semiconductor Instrumentation Q1 2025" }
+    ],
+    opportunities: [
+      { OpportunityNumber: "OPP-2025-0188", OpportunityName: "Helmholtz F41 and 336 Controller and PT Sensors", AccountName: "Rheintech Scientific GmbH", Stage: "Closed Won", CloseDate: "2025-03-14", Amount: 17480, OpportunityOwner: "M. Brandt", Territory: "Europe", EpicorQuoteNumber: "QT-2025-0091" },
+      { OpportunityNumber: "OPP-2025-0201", OpportunityName: "Vectronix Cernox and Teslameter Defense Contract", AccountName: "Vectronix Defense Research Inc", Stage: "Closed Won", CloseDate: "2025-03-18", Amount: 42000, OpportunityOwner: "J. Harmon", Territory: "East", EpicorQuoteNumber: "QT-2025-0098" },
+      { OpportunityNumber: "OPP-2025-0214", OpportunityName: "Nordvik Dilution Refrigerator Instrumentation Package", AccountName: "Nordvik Institute for Quantum Research", Stage: "Discovery", CloseDate: "2025-06-30", Amount: 28000, OpportunityOwner: "J. Harmon", Territory: "East", EpicorQuoteNumber: "" }
+    ],
+    quotes: [
+      { QuoteID: "QT-2025-0091", QuoteName: "Helmholtz F41 and 336 and PT-102 Package", AccountForQuote: "Rheintech Scientific GmbH", GrandTotal: 17480, OpportunityName: "Helmholtz F41 and 336 Controller and PT Sensors" },
+      { QuoteID: "QT-2025-0098", QuoteName: "Vectronix CX-1070 and F41 Defense Package", AccountForQuote: "Vectronix Defense Research Inc", GrandTotal: 42000, OpportunityName: "Vectronix Cernox and Teslameter Defense Contract" }
+    ]
+  },
+  pardot: {
+    prospects: [
+      { ProspectID: "MCAE-PRO-00881", Name: "Dr Evelyn Marsh", Email: "e.marsh@nordvik-quantum.edu", CompanyName: "Nordvik Institute for Quantum Research", Territory: "East", TotalScore: 117, InquiryRating: "Hot", SalesforceLeadID: "LD-00441", ConversionDate: "2025-02-28", SourceCampaign: "Dilution Refrigerator Instrumentation Spring 2025" },
+      { ProspectID: "MCAE-PRO-00744", Name: "Dr Jin-Ho Park", Email: "jh.park@seoulsami.kr", CompanyName: "Seoul Advanced Materials Institute", Territory: "Asia", TotalScore: 65, InquiryRating: "Warm", SalesforceLeadID: "LD-00448", ConversionDate: "2025-03-15", SourceCampaign: "Asia Semiconductor Instrumentation Q1 2025" },
+      { ProspectID: "MCAE-PRO-00901", Name: "Thomas Brecker", Email: "t.brecker@cryolab-munich.de", CompanyName: "CryoLab Munchen GmbH", Territory: "Europe", TotalScore: 55, InquiryRating: "Warm", SalesforceLeadID: "", ConversionDate: "2025-03-22", SourceCampaign: "EMEA Research Instrumentation Q1 2025" }
+    ]
+  },
+  marketingCloud: {
+    landing_pages: [
+      { LandingPageName: "Cernox Sensor Applications Dilution Refrigerator", TotalViews: 1244, UniqueViews: 892, UniqueFormSubmissions: 61, FormSubmissionRate: 6.8, UniqueClicks: 304 },
+      { LandingPageName: "Platinum Sensor Solutions Semiconductor and Industrial", TotalViews: 744, UniqueViews: 521, UniqueFormSubmissions: 26, FormSubmissionRate: 5.0, UniqueClicks: 144 },
+      { LandingPageName: "F41 Teslameter Magnetic Measurement Applications", TotalViews: 388, UniqueViews: 271, UniqueFormSubmissions: 12, FormSubmissionRate: 4.4, UniqueClicks: 98 }
+    ],
+    email_campaigns: [
+      { CampaignName: "Dilution Refrigerator Instrumentation Spring 2025", TotalSent: 1840, TotalDelivered: 1802, UniqueOpens: 612, OpenRate: 34.0, UniqueClicks: 188, ClickRate: 10.4, Bounces: 38, Unsubscribes: 4 },
+      { CampaignName: "Asia Semiconductor Instrumentation Q1 2025", TotalSent: 920, TotalDelivered: 901, UniqueOpens: 244, OpenRate: 27.1, UniqueClicks: 88, ClickRate: 9.8, Bounces: 19, Unsubscribes: 2 },
+      { CampaignName: "EMEA Research Instrumentation Q1 2025", TotalSent: 1420, TotalDelivered: 1388, UniqueOpens: 398, OpenRate: 28.7, UniqueClicks: 122, ClickRate: 8.8, Bounces: 32, Unsubscribes: 6 }
+    ]
+  }
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const fmt = n => '$' + n.toLocaleString();
+const pct = n => n + '%';
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+
+function Pill({ label, color }) {
+  return <span className={`pill pill-${color}`}>{label}</span>;
+}
+
+function KpiCard({ label, value, sub, color = 'green' }) {
+  return (
+    <div className={`kpi-card ${color}`}>
+      <div className="kpi-label">{label}</div>
+      <div className="kpi-value">{value}</div>
+      {sub && <div className="kpi-sub" dangerouslySetInnerHTML={{ __html: sub }} />}
+    </div>
+  );
+}
+
+function Card({ title, tag, tagColor = 'blue', children, flush }) {
+  return (
+    <div className="card">
+      <div className="card-head">
+        <div className="card-title">{title}</div>
+        {tag && <span className={`tag tag-${tagColor}`}>{tag}</span>}
+      </div>
+      <div className={flush ? 'card-body-flush' : 'card-body'}>{children}</div>
+    </div>
+  );
+}
+
+function AlertCard({ type = 'critical', title, children }) {
+  const cls = type === 'critical' ? '' : type === 'warning' ? 'warning' : type === 'success' ? 'success' : 'info';
+  const colors = { critical: 'red', warning: 'orange', success: 'green', info: 'blue' };
+  return (
+    <div className={`alert-card ${cls}`}>
+      <div className="alert-header">
+        <div className="alert-title">{title}</div>
+        <Pill label={type.toUpperCase()} color={colors[type]} />
+      </div>
+      <div className="alert-body">{children}</div>
+    </div>
+  );
+}
+
+// ── CHART COMPONENTS ──────────────────────────────────────────────────────────
+
+function BarChart({ id, labels, datasets, height = 180, yFmt }) {
+  const ref = useRef(null);
+  const chartRef = useRef(null);
+  useEffect(() => {
+    if (chartRef.current) chartRef.current.destroy();
+    chartRef.current = new Chart(ref.current, {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: datasets.length > 1, labels: { font: { family: 'DM Sans', size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { family: 'DM Mono', size: 9 }, color: '#6b6b6b' } },
+          y: { grid: { color: '#f0f0ee' }, ticks: { font: { family: 'DM Mono', size: 9 }, color: '#6b6b6b', callback: yFmt || (v => v) } }
+        }
+      }
+    });
+    return () => chartRef.current && chartRef.current.destroy();
+  }, []);
+  return <div className="chart-wrap" style={{ height }}><canvas ref={ref} id={id}></canvas></div>;
+}
+
+// ── VIEWS ─────────────────────────────────────────────────────────────────────
+
+function SalesView() {
+  const opps = LIVE_DATA.salesforce.opportunities;
+  const won = opps.filter(o => o.Stage === 'Closed Won');
+  const open = opps.filter(o => o.Stage !== 'Closed Won' && o.Stage !== 'Closed Lost');
+  const totalWon = won.reduce((s, o) => s + o.Amount, 0);
+  const totalPipeline = open.reduce((s, o) => s + o.Amount, 0);
+
+  const repData = [
+    { name: 'J. Harmon', territory: 'East', won: 312400, deals: 6, confidence80: 42000, winRate: 71 },
+    { name: 'M. Brandt', territory: 'Europe', won: 218600, deals: 4, confidence80: 28400, winRate: 67 },
+    { name: 'K. Tanaka', territory: 'Asia', won: 100000, deals: 2, confidence80: 18400, winRate: 48 },
+    { name: 'D. Harmon', territory: 'West', won: 84400, deals: 3, confidence80: 12000, winRate: 75 }
+  ];
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Sales Intelligence</div>
+        <div className="page-meta">Q2 2025 &nbsp;·&nbsp; Jan – Jun &nbsp;·&nbsp; Calendar Year</div>
+      </div>
+
+      <div className="kpi-row kpi-4" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Closed Won — Q2 2025" value={fmt(631000)} sub='<span class="up">+18%</span> vs Q1 2025' color="green" />
+        <KpiCard label="Total Pipeline" value={fmt(totalPipeline + 165000)} sub='<span class="up">8 deals</span> across all stages' color="blue" />
+        <KpiCard label="Win Rate" value="64%" sub='<span class="up">+6pts</span> vs Q1 2025' color="orange" />
+        <KpiCard label="Closed Lost — Q2" value={fmt(184000)} sub='<span class="down">3 deals</span> lost this quarter' color="red" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Pipeline by Stage" tag="Q2 2025" tagColor="blue">
+          {[
+            { label: 'Discovery', pct: 22, color: '#1a4fa8', amt: '$28K', ct: '1 deal' },
+            { label: 'Solution', pct: 18, color: '#3a7abf', amt: '$22K', ct: '1 deal' },
+            { label: 'Quote', pct: 38, color: '#f07a2a', amt: '$47K', ct: '2 deals' },
+            { label: 'Negotiation', pct: 55, color: '#c9a000', amt: '$68K', ct: '2 deals' },
+            { label: 'Closed Won', pct: 100, color: '#1a8c4e', amt: '$631K', ct: '12 deals' },
+            { label: 'Closed Lost', pct: 29, color: '#e63323', amt: '$184K', ct: '3 deals' },
+          ].map(s => (
+            <div key={s.label} className="stage-row">
+              <div className="stage-label">{s.label}</div>
+              <div className="bar-track"><div className="bar-fill" style={{ width: s.pct + '%', background: s.color }}></div></div>
+              <div className="stage-amt">{s.amt}</div>
+              <div className="stage-ct">{s.ct}</div>
+            </div>
+          ))}
+        </Card>
+
+        <Card title="Closed Won — Quarterly Trend" tag="FY2025" tagColor="green">
+          <BarChart
+            id="trend"
+            labels={['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025', 'Q2 2025']}
+            datasets={[{ label: 'Closed Won', data: [388000, 412000, 445000, 521000, 534000, 631000], backgroundColor: ['#e2e2e0','#e2e2e0','#e2e2e0','#e2e2e0','#e2e2e0','#1a8c4e'], borderWidth: 0 }]}
+            height={200}
+            yFmt={v => '$' + (v/1000) + 'K'}
+          />
+        </Card>
+      </div>
+
+      <div className="grid-2">
+        <Card title="Top Accounts — Closed Won" tag="Q2 2025" tagColor="green" flush>
+          <table className="tbl">
+            <thead><tr><th>#</th><th>Account</th><th>Segment</th><th>Amount</th></tr></thead>
+            <tbody>
+              {[
+                { n: '01', name: 'Vectronix Defense Research', seg: 'Defense', segc: 'red', amt: 42000 },
+                { n: '02', name: 'Rheintech Scientific GmbH', seg: 'Dealer EU', segc: 'blue', amt: 17480 },
+                { n: '03', name: 'Calvert Institute of Tech', seg: 'University', segc: 'orange', amt: 3600 },
+                { n: '04', name: 'Argonne National Lab', seg: 'Nat Lab', segc: 'orange', amt: 2400 },
+                { n: '05', name: 'Helmholtz Zentrum Berlin', seg: 'Nat Lab EU', segc: 'blue', amt: 1800 },
+              ].map(r => (
+                <tr key={r.n}>
+                  <td><span style={{ fontFamily: 'Bebas Neue', fontSize: '1.1rem', color: 'var(--rule)' }}>{r.n}</span></td>
+                  <td><strong>{r.name}</strong></td>
+                  <td><Pill label={r.seg} color={r.segc} /></td>
+                  <td><span className={`mono c-green`}>{fmt(r.amt)}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="Top Accounts — Open Pipeline" tag="Active" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>#</th><th>Account</th><th>Stage</th><th>Amount</th><th>Close</th></tr></thead>
+            <tbody>
+              {[
+                { n: '01', name: 'Nordvik Institute - Quantum', stage: 'Discovery', stagec: 'blue', amt: 28000, close: 'Jun 30' },
+                { n: '02', name: 'Seoul Advanced Materials', stage: 'Quote', stagec: 'orange', amt: 18400, close: 'May 15' },
+                { n: '03', name: 'CryoLab München GmbH', stage: 'Negotiation', stagec: 'yellow', amt: 12600, close: 'May 30' },
+                { n: '04', name: 'Karolinska Physics Lab', stage: 'Solution', stagec: 'blue', amt: 8800, close: 'Jun 15' },
+                { n: '05', name: 'Pacific Rim Cryo KK', stage: 'Quote', stagec: 'orange', amt: 6200, close: 'Apr 30' },
+              ].map(r => (
+                <tr key={r.n}>
+                  <td><span style={{ fontFamily: 'Bebas Neue', fontSize: '1.1rem', color: 'var(--rule)' }}>{r.n}</span></td>
+                  <td><strong>{r.name}</strong></td>
+                  <td><Pill label={r.stage} color={r.stagec} /></td>
+                  <td><span className="mono c-blue">{fmt(r.amt)}</span></td>
+                  <td><span className="mono c-mid">{r.close}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <Card title="Rep Performance" tag="Q2 2025" tagColor="ink">
+        <div className="grid-3" style={{ marginBottom: 0 }}>
+          {repData.map(r => (
+            <div key={r.name} className="rep-card">
+              <div className="rep-name">{r.name}</div>
+              <div className="rep-territory">{r.territory} Territory</div>
+              <div className="rep-stat"><span className="rep-stat-label">Closed Won</span><span className={`rep-stat-val c-${r.winRate >= 60 ? 'green' : 'orange'}`}>{fmt(r.won)}</span></div>
+              <div className="rep-stat"><span className="rep-stat-label">Deals Won</span><span className="rep-stat-val">{r.deals}</span></div>
+              <div className="rep-stat"><span className="rep-stat-label">&gt;80% Confidence</span><span className="rep-stat-val c-blue">{fmt(r.confidence80)}</span></div>
+              <div className="rep-stat"><span className="rep-stat-label">Win Rate</span><span className={`rep-stat-val c-${r.winRate >= 60 ? 'green' : 'orange'}`}>{r.winRate}%</span></div>
+              <div className="wl-bar"><div className="wl-w" style={{ width: r.winRate + '%' }}></div><div className="wl-l" style={{ width: (100 - r.winRate) + '%' }}></div></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid-2" style={{ marginTop: '0.8rem' }}>
+        <Card title="Closed Lost by Reason" tag="Q1 vs Q2" tagColor="red">
+          <BarChart
+            id="loss"
+            labels={['Price/Budget', 'Competitor', 'No Decision', 'Timing']}
+            datasets={[
+              { label: 'Q1 2025', data: [4, 2, 3, 1], backgroundColor: '#e2e2e0', borderWidth: 0 },
+              { label: 'Q2 2025', data: [5, 3, 2, 1], backgroundColor: '#e63323', borderWidth: 0 }
+            ]}
+            height={180}
+          />
+        </Card>
+
+        <Card title="Win / Loss Ratio by Rep" tag="Q2 2025" tagColor="blue">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+            {[
+              { rep: 'J. Harmon', ratio: 71, w: 6, l: 2 },
+              { rep: 'M. Brandt', ratio: 67, w: 4, l: 2 },
+              { rep: 'K. Tanaka', ratio: 48, w: 2, l: 3 },
+              { rep: 'D. Harmon', ratio: 75, w: 3, l: 1 },
+            ].map(r => (
+              <div key={r.rep} style={{ border: '1px solid var(--rule)', padding: '0.7rem', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.3rem' }}>{r.rep}</div>
+                <div style={{ fontFamily: 'Bebas Neue', fontSize: '1.8rem', color: r.ratio >= 60 ? 'var(--ink)' : 'var(--orange)', lineHeight: 1, marginBottom: '0.2rem' }}>{r.ratio}%</div>
+                <div style={{ fontSize: '10px', color: 'var(--mid)', marginBottom: '0.4rem' }}>{r.w}W &nbsp;·&nbsp; {r.l}L &nbsp;·&nbsp; {r.w + r.l} total</div>
+                <div className="wl-bar"><div className="wl-w" style={{ width: r.ratio + '%' }}></div><div className="wl-l" style={{ width: (100 - r.ratio) + '%' }}></div></div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function OperationsView() {
+  const jobs = LIVE_DATA.epicor.jobs;
+  const inv = LIVE_DATA.epicor.inventory;
+  const orders = LIVE_DATA.epicor.sales_orders;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Operations Intelligence</div>
+        <div className="page-meta">Epicor ERP &nbsp;·&nbsp; Live Job and Inventory Status</div>
+      </div>
+
+      <div className="kpi-row kpi-4" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Open Sales Orders" value={orders.length} sub="Active orders in production" color="blue" />
+        <KpiCard label="Open Jobs" value={jobs.filter(j => j.Status === 'OPEN').length} sub="Currently in manufacturing" color="orange" />
+        <KpiCard label="Inventory Alerts" value={inv.filter(i => i.AvailableQty < 0).length} sub='<span class="down">Parts below zero available</span>' color="red" />
+        <KpiCard label="On-Time Risk" value="1 Job" sub='<span class="down">JB-44821 due after ship date</span>' color="red" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Open Jobs — Production Status" tag="Live" tagColor="orange" flush>
+          <table className="tbl">
+            <thead><tr><th>Job #</th><th>Part</th><th>Progress</th><th>Due</th><th>Ship By</th><th>Status</th></tr></thead>
+            <tbody>
+              {jobs.filter(j => j.Status === 'OPEN').map(j => {
+                const pct = Math.round((j.Completed / j.OriginalProductionQty) * 100);
+                const late = new Date(j.Due) > new Date(j.ShipByDate);
+                return (
+                  <tr key={j.JobNumber}>
+                    <td><span className="mono bold">{j.JobNumber}</span></td>
+                    <td><span className="mono">{j.Part}</span></td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div className="bar-track" style={{ flex: 1 }}>
+                          <div className="bar-fill" style={{ width: pct + '%', background: pct < 30 ? 'var(--red)' : 'var(--orange)' }}></div>
+                        </div>
+                        <span className="mono" style={{ fontSize: '10px', color: 'var(--mid)' }}>{j.Completed}/{j.OriginalProductionQty}</span>
+                      </div>
+                    </td>
+                    <td><span className="mono c-mid">{j.Due}</span></td>
+                    <td><span className={`mono ${late ? 'c-red bold' : 'c-mid'}`}>{j.ShipByDate}</span></td>
+                    <td><Pill label={late ? 'AT RISK' : 'ON TRACK'} color={late ? 'red' : 'green'} /></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="Inventory Availability" tag="All Parts" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Part</th><th>On Hand</th><th>Allocated</th><th>Available</th><th>Lead Time</th></tr></thead>
+            <tbody>
+              {inv.map(i => (
+                <tr key={i.PartNum}>
+                  <td><span className="mono bold">{i.PartNum}</span></td>
+                  <td><span className="mono">{i.OnHandQty}</span></td>
+                  <td><span className="mono">{i.AllocatedQty}</span></td>
+                  <td><span className={`mono bold ${i.AvailableQty < 0 ? 'c-red' : 'c-green'}`}>{i.AvailableQty}</span></td>
+                  <td><span className="mono c-mid">{i.LeadTimeDays}d</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <Card title="Open Sales Orders" tag="Active" tagColor="blue" flush>
+        <table className="tbl">
+          <thead><tr><th>Order #</th><th>Customer</th><th>Reason</th><th>Order Date</th><th>Ship By</th><th>Total</th></tr></thead>
+          <tbody>
+            {orders.map(o => (
+              <tr key={o.SalesOrderNumber}>
+                <td><span className="mono bold">{o.SalesOrderNumber}</span></td>
+                <td>{o.CustomerID}</td>
+                <td><span className="mono c-mid" style={{ fontSize: '11px' }}>{o.ReasonForSale}</span></td>
+                <td><span className="mono c-mid">{o.OrderDate}</span></td>
+                <td><span className="mono">{o.ShipBy}</span></td>
+                <td><span className="mono bold c-green">{fmt(o.OrderTotal)}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+}
+
+function MarketingView() {
+  const pages = LIVE_DATA.marketingCloud.landing_pages;
+  const campaigns = LIVE_DATA.marketingCloud.email_campaigns;
+  const prospects = LIVE_DATA.pardot.prospects;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Marketing Intelligence</div>
+        <div className="page-meta">Pardot &nbsp;·&nbsp; Marketing Cloud &nbsp;·&nbsp; Q2 2025</div>
+      </div>
+
+      <div className="kpi-row kpi-4" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Active Prospects" value={prospects.length} sub="In Pardot nurture pipeline" color="blue" />
+        <KpiCard label="Avg Engagement Score" value={Math.round(prospects.reduce((s, p) => s + p.TotalScore, 0) / prospects.length)} sub='<span class="up">Above threshold</span>' color="green" />
+        <KpiCard label="Total Email Sent" value="4,180" sub="Across 3 active campaigns" color="orange" />
+        <KpiCard label="Avg Open Rate" value="30.3%" sub='<span class="up">Above 25% benchmark</span>' color="green" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Landing Page Performance" tag="All Active" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Page</th><th>Views</th><th>Submissions</th><th>Rate</th><th>Clicks</th></tr></thead>
+            <tbody>
+              {pages.map(p => (
+                <tr key={p.LandingPageName}>
+                  <td style={{ maxWidth: '160px', fontSize: '11px' }}>{p.LandingPageName}</td>
+                  <td><span className="mono">{p.UniqueViews.toLocaleString()}</span></td>
+                  <td><span className="mono">{p.UniqueFormSubmissions}</span></td>
+                  <td><span className={`mono bold ${p.FormSubmissionRate >= 5 ? 'c-green' : 'c-orange'}`}>{p.FormSubmissionRate}%</span></td>
+                  <td><span className="mono">{p.UniqueClicks}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="Email Campaign Performance" tag="Q2 2025" tagColor="green" flush>
+          <table className="tbl">
+            <thead><tr><th>Campaign</th><th>Sent</th><th>Opens</th><th>Open Rate</th><th>Click Rate</th></tr></thead>
+            <tbody>
+              {campaigns.map(c => (
+                <tr key={c.CampaignName}>
+                  <td style={{ maxWidth: '160px', fontSize: '11px' }}>{c.CampaignName}</td>
+                  <td><span className="mono">{c.TotalSent.toLocaleString()}</span></td>
+                  <td><span className="mono">{c.UniqueOpens}</span></td>
+                  <td><span className={`mono bold ${c.OpenRate >= 30 ? 'c-green' : 'c-orange'}`}>{c.OpenRate}%</span></td>
+                  <td><span className={`mono bold ${c.ClickRate >= 10 ? 'c-green' : 'c-orange'}`}>{c.ClickRate}%</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <Card title="Prospect Pipeline — Pardot Engagement Scores" tag="Active Prospects" tagColor="blue" flush>
+        <table className="tbl">
+          <thead><tr><th>Prospect</th><th>Company</th><th>Territory</th><th>Score</th><th>Score Bar</th><th>Rating</th><th>SF Lead</th></tr></thead>
+          <tbody>
+            {prospects.sort((a, b) => b.TotalScore - a.TotalScore).map(p => (
+              <tr key={p.ProspectID}>
+                <td><strong>{p.Name}</strong></td>
+                <td style={{ fontSize: '11px' }}>{p.CompanyName}</td>
+                <td><Pill label={p.Territory} color={p.Territory === 'East' ? 'blue' : p.Territory === 'Asia' ? 'orange' : 'green'} /></td>
+                <td><span className={`mono bold ${p.TotalScore >= 100 ? 'c-red' : p.TotalScore >= 70 ? 'c-orange' : 'c-mid'}`}>{p.TotalScore}</span></td>
+                <td style={{ minWidth: '100px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <div className="score-bar-track"><div className="score-bar-fill" style={{ width: Math.min(p.TotalScore, 120) / 1.2 + '%', background: p.TotalScore >= 100 ? 'var(--red)' : p.TotalScore >= 70 ? 'var(--orange)' : 'var(--blue)' }}></div></div>
+                  </div>
+                </td>
+                <td><Pill label={p.InquiryRating} color={p.InquiryRating === 'Hot' ? 'red' : 'yellow'} /></td>
+                <td><span className="mono" style={{ fontSize: '10px', color: p.SalesforceLeadID ? 'var(--green)' : 'var(--red)' }}>{p.SalesforceLeadID || 'Not created'}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+}
+
+function AlertsView() {
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Alerts and Flags</div>
+        <div className="page-meta">AI Cross-System Analysis &nbsp;·&nbsp; Updated: {new Date().toLocaleString()}</div>
+      </div>
+
+      <div className="kpi-row kpi-4" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Critical Alerts" value="2" sub='<span class="down">Immediate action required</span>' color="red" />
+        <KpiCard label="Warnings" value="3" sub='<span class="warn">Review within 24 hours</span>' color="orange" />
+        <KpiCard label="Fast Path Actions" value="2" sub='<span class="up">Ready to auto-process</span>' color="green" />
+        <KpiCard label="Info Items" value="2" sub="Awareness only" color="blue" />
+      </div>
+
+      <div className="grid-2">
+        <div>
+          <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.6rem' }}>Critical</div>
+
+          <AlertCard type="critical" title="Production Miss — Vectronix Defense Order">
+            Job <strong>JB-44821</strong> due <strong>2025-05-12</strong> — 2 days AFTER ship by date <strong>2025-05-10</strong>. Only <strong>4 of 20</strong> Cernox 1070 units complete. Defense customer. Order value <strong>$42,000</strong>. Escalate to planner R. Okafor immediately.
+          </AlertCard>
+
+          <AlertCard type="critical" title="Inventory Conflict — F41 Teslameter">
+            F41-TM available qty is <strong>-2</strong>. Two open orders (SO-28855 and SO-28871) plus a new RFQ from Argonne Lab all require F41-TM. <strong>Prioritization required</strong> before any delivery date is confirmed.
+          </AlertCard>
+
+          <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', margin: '1rem 0 0.6rem' }}>Warnings</div>
+
+          <AlertCard type="warning" title="High Score Prospect — No Follow-Up">
+            Dr Evelyn Marsh at <strong>Nordvik Institute</strong> — Pardot score <strong>117</strong>. Downloaded Cernox and 336 Controller specs. Lead in Working status <strong>18 days</strong> with no activity. Open opportunity <strong>$28,000</strong>. Technical call April 18. Recommend immediate sales prep.
+          </AlertCard>
+
+          <AlertCard type="warning" title="Korea Territory — No Dealer Assigned">
+            Dr Jin-Ho Park at <strong>Seoul Advanced Materials</strong> — score <strong>65 and rising</strong>. Downloaded PT-102 datasheet. No Korea dealer on file. If inquiry converts, no route to fulfill. Assign territory dealer before prospect escalates.
+          </AlertCard>
+
+          <AlertCard type="warning" title="Europe Prospect — Approaching Lead Threshold">
+            Thomas Brecker at <strong>CryoLab München GmbH</strong> — score <strong>55</strong>. Downloaded F41 Teslameter datasheet. No Salesforce lead yet. Route through <strong>Rheintech Scientific</strong> (existing Germany dealer) when score reaches 70.
+          </AlertCard>
+        </div>
+
+        <div>
+          <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.6rem' }}>Fast Path — Ready to Process</div>
+
+          <AlertCard type="success" title="Cernox Calibration RFQ — Auto-Match Complete">
+            Dr Patricia Solvang at <strong>Calvert Institute</strong> submitted RFQ for 6 Cernox 1050 sensors with serial numbers. AI matched to Epicor customer <strong>CALTEC-CRYO</strong>. Epicor SO-28841 created automatically. Inquiry <strong>IQ-02287</strong> linked. <strong>Awaiting sales rep confirmation only — no manual entry required.</strong>
+          </AlertCard>
+
+          <AlertCard type="success" title="Argonne Lab RFQ — Existing Customer Identified">
+            Dr Sarah Kowalski at <strong>Argonne National Lab</strong> submitted RFQ for F41 Teslameter. Matched to Epicor customer <strong>ARGONNE-NL</strong>. Ready to process as Inquiry <strong>IQ-02301</strong>. Note: F41-TM inventory at -2 — confirm delivery date with ops before responding.
+          </AlertCard>
+
+          <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', margin: '1rem 0 0.6rem' }}>Info</div>
+
+          <AlertCard type="info" title="Cernox Landing Page — Top Performer">
+            Dilution Refrigerator landing page at <strong>6.8% form submission rate</strong> — highest of all active pages. Primary source of Dilution Refrigerator campaign leads including the $28K Nordvik opportunity. Consider increasing ad spend.
+          </AlertCard>
+
+          <AlertCard type="info" title="Closed Won Opportunity — Missing Epicor Entry">
+            Opportunity <strong>OPP-2025-0188</strong> (Helmholtz, $17,480) is Closed Won with Epicor Quote QT-2025-0091 referenced. Verify SO-28855 has been entered in Epicor and job scheduling is confirmed for April 25 ship date.
+          </AlertCard>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExecutiveView() {
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Executive Summary</div>
+        <div className="page-meta">All Systems &nbsp;·&nbsp; Q2 2025 &nbsp;·&nbsp; AI Generated</div>
+      </div>
+
+      <div className="kpi-row kpi-5" style={{ marginBottom: '1rem' }}>
+        <KpiCard label="Revenue — Q2 Closed" value="$631K" sub='<span class="up">+18% vs Q1</span>' color="green" />
+        <KpiCard label="Open Pipeline" value="$1.24M" sub="8 active deals" color="blue" />
+        <KpiCard label="Win Rate" value="64%" sub='<span class="up">+6pts vs Q1</span>' color="orange" />
+        <KpiCard label="Critical Alerts" value="2" sub='<span class="down">Need immediate action</span>' color="red" />
+        <KpiCard label="Fast Path Ready" value="2 RFQs" sub='<span class="up">Auto-matched to customers</span>' color="green" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="What the AI Found This Week" tag="Cross-System Analysis" tagColor="ink">
+          {[
+            { icon: '🔴', text: 'Vectronix defense order ($42K) at risk — production job will miss ship date by 2 days. Escalation needed today.' },
+            { icon: '🔴', text: 'F41 Teslameter inventory at -2 available. Three orders competing for same part. Prioritization needed before any delivery is confirmed.' },
+            { icon: '🟡', text: 'Top Pardot prospect (score 117) at Nordvik Institute has been in Working status 18 days with no sales activity. $28K opportunity at risk of going cold.' },
+            { icon: '🟢', text: 'Two RFQs auto-matched to existing Epicor customers. Epicor orders pre-created. Sales reps need one confirmation click — zero manual entry.' },
+            { icon: '🟢', text: 'Cernox dilution refrigerator landing page performing at 6.8% submission rate — highest in portfolio. Recommend increased investment.' },
+          ].map((item, i) => (
+            <div key={i} className="metric-row">
+              <span style={{ fontSize: '1rem', flexShrink: 0 }}>{item.icon}</span>
+              <span className="metric-label" style={{ color: 'var(--ink)', fontSize: '12px' }}>{item.text}</span>
+            </div>
+          ))}
+        </Card>
+
+        <Card title="Pipeline Health by Territory" tag="Q2 2025" tagColor="blue">
+          {[
+            { territory: 'East', won: '$312K', open: '$28K', rep: 'J. Harmon', wr: '71%', color: 'green' },
+            { territory: 'Europe', won: '$218K', open: '$30K', rep: 'M. Brandt', wr: '67%', color: 'green' },
+            { territory: 'Asia', won: '$100K', open: '$18K', rep: 'K. Tanaka', wr: '48%', color: 'orange' },
+            { territory: 'West', won: '$84K', open: '$12K', rep: 'D. Harmon', wr: '75%', color: 'green' },
+          ].map(t => (
+            <div key={t.territory} className="metric-row" style={{ display: 'grid', gridTemplateColumns: '0.8in 0.8in 0.8in 1fr 0.5in', gap: '0.5rem', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'DM Mono', fontSize: '10px', fontWeight: 600 }}>{t.territory}</span>
+              <span className="mono c-green" style={{ fontSize: '11px' }}>{t.won}</span>
+              <span className="mono c-blue" style={{ fontSize: '11px' }}>{t.open}</span>
+              <span style={{ fontSize: '11px', color: 'var(--mid)' }}>{t.rep}</span>
+              <span className={`mono c-${t.color}`} style={{ fontSize: '11px', fontWeight: 600 }}>{t.wr}</span>
+            </div>
+          ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '0.8in 0.8in 0.8in 1fr 0.5in', gap: '0.5rem', marginTop: '0.6rem', paddingTop: '0.6rem', borderTop: '2px solid var(--ink)' }}>
+            <span style={{ fontFamily: 'DM Mono', fontSize: '10px', fontWeight: 600 }}>TOTAL</span>
+            <span className="mono bold c-green" style={{ fontSize: '11px' }}>$631K</span>
+            <span className="mono bold c-blue" style={{ fontSize: '11px' }}>$88K</span>
+            <span></span>
+            <span className="mono bold" style={{ fontSize: '11px' }}>64%</span>
+          </div>
+        </Card>
+      </div>
+
+      <div className="grid-3">
+        <Card title="Top 3 Actions Required" tag="Now" tagColor="red">
+          {[
+            { n: '1', action: 'Escalate JB-44821 to planner R. Okafor — Vectronix ship date at risk', urgent: true },
+            { n: '2', action: 'Resolve F41-TM inventory conflict across SO-28855 and SO-28871 before confirming Argonne RFQ delivery', urgent: true },
+            { n: '3', action: 'Assign sales rep to follow up with Dr Marsh at Nordvik — technical call April 18, $28K at stake', urgent: false },
+          ].map(a => (
+            <div key={a.n} className="metric-row">
+              <span style={{ fontFamily: 'Bebas Neue', fontSize: '1.4rem', color: a.urgent ? 'var(--red)' : 'var(--orange)', lineHeight: 1, flexShrink: 0 }}>{a.n}</span>
+              <span className="metric-label" style={{ color: 'var(--ink)', fontSize: '12px' }}>{a.action}</span>
+            </div>
+          ))}
+        </Card>
+
+        <Card title="Systems Status" tag="Live" tagColor="green">
+          {[
+            { sys: 'Epicor ERP', status: 'Connected', color: 'green', detail: '3 orders · 2 jobs · 5 parts' },
+            { sys: 'Salesforce CRM', status: 'Connected', color: 'green', detail: '3 opps · 2 leads · 2 quotes' },
+            { sys: 'Pardot MCAE', status: 'Connected', color: 'green', detail: '3 prospects · 2 RFQs' },
+            { sys: 'Marketing Cloud', status: 'Connected', color: 'green', detail: '3 pages · 3 campaigns' },
+          ].map(s => (
+            <div key={s.sys} className="metric-row">
+              <span className="metric-label"><strong>{s.sys}</strong><br /><span style={{ fontSize: '11px' }}>{s.detail}</span></span>
+              <Pill label={s.status} color={s.color} />
+            </div>
+          ))}
+        </Card>
+
+        <Card title="AI Layer Performance" tag="This Run" tagColor="blue">
+          {[
+            { label: 'Data sources read', val: '4' },
+            { label: 'Records analyzed', val: '47' },
+            { label: 'Cross-system matches', val: '8' },
+            { label: 'Alerts generated', val: '7' },
+            { label: 'Fast path actions', val: '2' },
+            { label: 'Manual steps eliminated', val: '4' },
+          ].map(m => (
+            <div key={m.label} className="metric-row">
+              <span className="metric-label">{m.label}</span>
+              <span className="metric-val">{m.val}</span>
+            </div>
+          ))}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
+const TABS = [
+  { id: 'executive', label: 'Executive' },
+  { id: 'sales', label: 'Sales' },
+  { id: 'operations', label: 'Operations' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'alerts', label: 'Alerts & Flags' },
+];
+
+// Global mutable data store — updated by fetch, read by all views
+let LIVE_DATA = DATA;
+
+function App() {
+  const [active, setActive] = useState('executive');
+  const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleString());
+  const [dataSource, setDataSource] = useState('fallback');
+  const [fetchStatus, setFetchStatus] = useState('Connecting...');
+
+  // Fetch from n8n and update LIVE_DATA
+  const fetchData = async () => {
+    try {
+      const res = await fetch(N8N_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const raw = await res.json();
+
+      // n8n returns array or object — handle both
+      const payload = Array.isArray(raw) ? raw[0] : raw;
+
+      // Extract the four sources from whatever structure n8n returns
+      let epicor = payload.epicor || payload.json?.epicor || LIVE_DATA.epicor;
+      let salesforce = payload.salesforce || payload.json?.salesforce || LIVE_DATA.salesforce;
+      let pardot = payload.pardot || payload.json?.pardot || LIVE_DATA.pardot;
+      let marketingCloud = payload.marketingCloud || payload.json?.marketingCloud || LIVE_DATA.marketingCloud;
+
+      // If combined string exists parse it
+      if (payload.combined) {
+        try {
+          const parsed = JSON.parse(payload.combined);
+          epicor = parsed.epicor || epicor;
+          salesforce = parsed.salesforce || salesforce;
+          pardot = parsed.pardot || pardot;
+          marketingCloud = parsed.marketingCloud || marketingCloud;
+        } catch(e) {}
+      }
+
+      LIVE_DATA = { epicor, salesforce, pardot, marketingCloud };
+      setDataSource('live');
+      setFetchStatus('Live — n8n');
+      setLastUpdated(new Date().toLocaleString());
+    } catch (err) {
+      setFetchStatus('Using fallback data');
+      setDataSource('fallback');
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, POLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
+
+  const views = {
+    executive: <ExecutiveView />,
+    sales: <SalesView />,
+    operations: <OperationsView />,
+    marketing: <MarketingView />,
+    alerts: <AlertsView />,
+  };
+
+  return (
+    <div>
+      <nav className="nav">
+        <div className="nav-logo">
+          <img src="https://raw.githubusercontent.com/jrjrdesigns/salesiq-demo/main/LakeShoreLogo.png" alt="Lake Shore Cryotronics" style={{ height: '32px', objectFit: 'contain' }} />
+        </div>
+        <div className="nav-tabs">
+          {TABS.map(t => (
+            <div key={t.id} className={`nav-tab ${active === t.id ? 'active' : ''}`} onClick={() => setActive(t.id)}>
+              {t.label}
+              {t.id === 'alerts' && <span style={{ marginLeft: '0.4rem', background: 'var(--red)', color: 'white', fontFamily: 'DM Mono', fontSize: '8px', padding: '0.1rem 0.35rem', borderRadius: '2px' }}>5</span>}
+            </div>
+          ))}
+        </div>
+        <div className="nav-right">
+          <div className="nav-badge">Epicor · Salesforce · Pardot · Marketing Cloud</div>
+          <div className="live-indicator">
+            <div className="live-dot" style={{ background: dataSource === 'live' ? 'var(--green)' : 'var(--orange)' }}></div>
+            {fetchStatus}
+          </div>
+        </div>
+      </nav>
+
+      <div style={{ background: 'var(--yellow-light)', borderBottom: '2px solid var(--yellow)', padding: '0.35rem 1.5rem', fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--yellow)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        ⚠ Simulated data — proof of concept demonstration &nbsp;·&nbsp; Data source: {fetchStatus}
+      </div>
+
+      <div className="container">
+        {views[active]}
+        <div className="dash-footer">
+          <span>AI Integration Layer &nbsp;·&nbsp; Data: Epicor · Salesforce · Pardot · Marketing Cloud</span>
+          <span>Last updated: {lastUpdated} &nbsp;·&nbsp; Polling every 5s</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lake Shore Cryotronics — AI Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+  :root {
+    --white: #ffffff;
+    --off: #f0f4f8;
+    --ink: #0f2340;
+    --mid: #5a7a9a;
+    --rule: #d0dce8;
+    --alert: #c0392b;
+    --warn: #e67e22;
+    --good: #1a6a9a;
+    --blue: #1a3a5c;
+    --accent: #4a90c4;
+    --alert-light: #fdf0ef;
+    --warn-light: #fef5ec;
+    --good-light: #e8f4fa;
+    --blue-light: #e0edf7;
+    --accent-light: #eaf4fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--off);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .nav {
+    background: #0f2340;
+    display: flex;
+    align-items: stretch;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #1a3a5c;
+  }
+
+  .nav-tabs {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+  }
+
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a9ab8;
+    padding: 0 1.2rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    border-right: 1px solid #1a3a5c;
+  }
+
+  .nav-tab:hover { color: #fff; background: #1a3a5c; }
+  .nav-tab.active { color: #fff; border-bottom-color: #4a90c4; background: #1a3a5c; }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    padding: 0 1.2rem;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  .nav-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4a90c4;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: #4a90c4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .demo-banner {
+    background: #eaf4fb;
+    border-bottom: 2px solid #4a90c4;
+    padding: 0.35rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a3a5c;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 3rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .page-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .kpi-row { display: grid; gap: 0.8rem; margin-bottom: 1rem; }
+  .kpi-4 { grid-template-columns: repeat(4,1fr); }
+  .kpi-3 { grid-template-columns: repeat(3,1fr); }
+  .kpi-5 { grid-template-columns: repeat(5,1fr); }
+
+  .kpi-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--ink);
+    padding: 1rem 1.2rem;
+  }
+
+  .kpi-card.good { border-top-color: var(--good); }
+  .kpi-card.blue { border-top-color: var(--blue); }
+  .kpi-card.accent { border-top-color: var(--accent); }
+  .kpi-card.alert { border-top-color: var(--alert); }
+  .kpi-card.warn { border-top-color: var(--warn); }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.4rem;
+  }
+
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+  }
+
+  .kpi-sub { font-size: 11px; color: var(--mid); }
+  .kpi-sub .up { color: var(--good); font-weight: 600; }
+  .kpi-sub .dn { color: var(--alert); font-weight: 600; }
+  .kpi-sub .wn { color: var(--warn); font-weight: 600; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+
+  .card { background: var(--white); border: 1px solid var(--rule); margin-bottom: 0.8rem; }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem 0.7rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .tag-good { background: var(--good-light); color: var(--good); }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+  .tag-accent { background: var(--accent-light); color: var(--accent); }
+  .tag-alert { background: var(--alert-light); color: var(--alert); }
+  .tag-warn { background: var(--warn-light); color: var(--warn); }
+  .tag-ink { background: var(--ink); color: var(--white); }
+
+  .card-body { padding: 0.8rem 1rem; }
+  .card-body-flush { padding: 0; }
+
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tbl th {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    padding: 0.45rem 0.7rem;
+    text-align: left;
+    border-bottom: 2px solid var(--ink);
+    background: var(--off);
+    white-space: nowrap;
+  }
+  .tbl td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--rule); color: var(--ink); vertical-align: middle; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: var(--off); }
+
+  .mono { font-family: 'DM Mono', monospace; font-size: 11px; }
+  .bold { font-weight: 600; }
+  .c-good { color: var(--good); }
+  .c-blue { color: var(--blue); }
+  .c-alert { color: var(--alert); }
+  .c-warn { color: var(--warn); }
+  .c-mid { color: var(--mid); }
+  .c-accent { color: var(--accent); }
+
+  .pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    white-space: nowrap;
+  }
+  .pill-good { background: var(--good-light); color: var(--good); }
+  .pill-blue { background: var(--blue-light); color: var(--blue); }
+  .pill-accent { background: var(--accent-light); color: var(--accent); }
+  .pill-alert { background: var(--alert-light); color: var(--alert); }
+  .pill-warn { background: var(--warn-light); color: var(--warn); }
+  .pill-ink { background: var(--ink); color: var(--white); }
+
+  .bar-track { height: 7px; background: var(--off); overflow: hidden; }
+  .bar-fill { height: 100%; transition: width 1.2s ease; }
+
+  .stage-row { display: grid; grid-template-columns: 1.1in 1fr 0.8in 0.5in; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem; }
+  .stage-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
+  .stage-amt { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; text-align: right; }
+  .stage-ct { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); text-align: right; }
+
+  .alert-card {
+    border-left: 4px solid var(--alert);
+    background: var(--white);
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.6rem;
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .alert-card.warn { border-left-color: var(--warn); }
+  .alert-card.info { border-left-color: var(--accent); }
+  .alert-card.success { border-left-color: var(--good); }
+  .alert-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem; }
+  .alert-title { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .alert-body { font-size: 12px; color: var(--mid); line-height: 1.5; }
+  .alert-body strong { color: var(--ink); font-weight: 600; }
+
+  .rep-card { border: 1px solid var(--rule); padding: 0.8rem; background: var(--white); }
+  .rep-name { font-weight: 600; font-size: 13px; margin-bottom: 0.1rem; }
+  .rep-territory { font-family: 'DM Mono', monospace; font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.6rem; }
+  .rep-stat { display: flex; justify-content: space-between; margin-bottom: 0.25rem; font-size: 11px; }
+  .rep-stat-label { color: var(--mid); }
+  .rep-stat-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .wl-bar { display: flex; height: 4px; margin-top: 0.5rem; }
+  .wl-w { background: var(--good); }
+  .wl-l { background: var(--alert); }
+
+  .chart-wrap { position: relative; padding: 0.5rem 0; }
+  .score-bar-track { height: 6px; background: var(--off); flex: 1; }
+
+  .metric-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid var(--rule); }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { font-size: 12px; color: var(--mid); flex: 1; }
+  .metric-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+
+  .dash-footer { margin-top: 2rem; padding-top: 0.8rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--mid); letter-spacing: 0.06em; }
+
+  @media (max-width: 900px) {
+    .kpi-4,.kpi-5 { grid-template-columns: 1fr 1fr; }
+    .kpi-3 { grid-template-columns: 1fr 1fr; }
+    .grid-2,.grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const N8N_URL = "https://james-francis.app.n8n.cloud/webhook/data";
+const POLL_INTERVAL = 5000;
+
+// ── FALLBACK DATA ─────────────────────────────────────────────────────────────
+const FALLBACK = {
+  epicor: {
+    customers: [
+      { CustomerID: "CALTEC-CRYO", Name: "Calvert Institute of Technology - Cryogenics Lab", Type: "Domestic", Territory: "West", Salesperson: "D. Harmon", CompanySegment: "University Research" },
+      { CustomerID: "ARGONNE-NL", Name: "Argonne National Research Laboratory", Type: "Domestic", Territory: "East", Salesperson: "J. Harmon", CompanySegment: "National Laboratory" },
+      { CustomerID: "RHEINTECH-DE", Name: "Rheintech Scientific GmbH", Type: "Dealer", Territory: "Europe", Salesperson: "M. Brandt", CompanySegment: "Dealer" },
+      { CustomerID: "ENDUSER-HELMHOLTZ", Name: "Helmholtz Zentrum fur Materialien", Type: "Domestic", Territory: "Europe", Salesperson: "M. Brandt", CompanySegment: "National Laboratory" },
+      { CustomerID: "VECTRONIX-DEF", Name: "Vectronix Defense Research Inc", Type: "Domestic", Territory: "East", Salesperson: "J. Harmon", CompanySegment: "Defense and Aerospace" }
+    ],
+    sales_orders: [
+      { SalesOrderNumber: "SO-28841", CustomerID: "CALTEC-CRYO", OrderDate: "2025-03-10", ShipBy: "2025-04-07", OrderTotal: 3600, ReasonForSale: "Calibration Service" },
+      { SalesOrderNumber: "SO-28855", CustomerID: "RHEINTECH-DE", OrderDate: "2025-03-14", ShipBy: "2025-04-25", OrderTotal: 17480, ReasonForSale: "New Unit Sale - Dealer" },
+      { SalesOrderNumber: "SO-28871", CustomerID: "VECTRONIX-DEF", OrderDate: "2025-03-18", ShipBy: "2025-05-10", OrderTotal: 42000, ReasonForSale: "New Unit Sale - Defense" }
+    ],
+    jobs: [
+      { JobNumber: "JB-44821", Part: "CX-1070-BO", Description: "Cernox 1070 Uncalibrated - BO Package", LinkedOrder: "SO-28871", Status: "OPEN", OriginalProductionQty: 20, Completed: 4, Due: "2025-05-12", ShipByDate: "2025-05-10", Planner: "R. Okafor" },
+      { JobNumber: "JB-44798", Part: "F41-TM", Description: "F41 Teslameter - Single Axis", LinkedOrder: 0, Status: "CLOSED", OriginalProductionQty: 10, Completed: 10, Due: "2025-03-15", ShipByDate: "", Planner: "S. Kowalski" }
+    ],
+    inventory: [
+      { PartNum: "CX-1050-SD", PartDescription: "Cernox 1050 Sensor - SD Package", OnHandQty: 22, AllocatedQty: 6, AvailableQty: 16, LeadTimeDays: 30 },
+      { PartNum: "CX-1070-BO", PartDescription: "Cernox 1070 Sensor - BO Package", OnHandQty: 4, AllocatedQty: 20, AvailableQty: -16, LeadTimeDays: 45 },
+      { PartNum: "F41-TM", PartDescription: "F41 Teslameter - Single Axis", OnHandQty: 4, AllocatedQty: 6, AvailableQty: -2, LeadTimeDays: 21 },
+      { PartNum: "336-TC", PartDescription: "Model 336 Temperature Controller", OnHandQty: 6, AllocatedQty: 2, AvailableQty: 4, LeadTimeDays: 14 },
+      { PartNum: "PT-102-CU", PartDescription: "Platinum RTD Sensor PT-102", OnHandQty: 48, AllocatedQty: 10, AvailableQty: 38, LeadTimeDays: 10 }
+    ]
+  },
+  salesforce: {
+    inquiries: [
+      { InquiryID: "IQ-02287", Company: "Calvert Institute of Technology Cryogenics Lab", InquiringAbout: "Calibration", Products: "Cernox 1050 Sensor CX-1050-SD", InquiryRating: "Hot", IsCurrentCustomer: true, Owner: "D. Harmon", CreatedDate: "2025-03-09" },
+      { InquiryID: "IQ-02301", Company: "Argonne National Research Laboratory", InquiringAbout: "New Unit Purchase", Products: "F41 Teslameter", InquiryRating: "Hot", IsCurrentCustomer: true, Owner: "J. Harmon", CreatedDate: "2025-03-20" }
+    ],
+    leads: [
+      { LeadID: "LD-00441", Name: "Dr Evelyn Marsh", Company: "Nordvik Institute for Quantum Research", LeadStatus: "Working", Territory: "East", LeadOwner: "J. Harmon", DaysSinceCreated: 18, CampaignName: "Dilution Refrigerator Instrumentation Spring 2025" },
+      { LeadID: "LD-00448", Name: "Dr Jin-Ho Park", Company: "Seoul Advanced Materials Institute", LeadStatus: "New", Territory: "Asia", LeadOwner: "K. Tanaka", DaysSinceCreated: 5, CampaignName: "Asia Semiconductor Instrumentation Q1 2025" }
+    ],
+    opportunities: [
+      { OpportunityNumber: "OPP-2025-0188", OpportunityName: "Helmholtz F41 and 336 Controller and PT Sensors", AccountName: "Rheintech Scientific GmbH", Stage: "Closed Won", CloseDate: "2025-03-14", Amount: 17480, OpportunityOwner: "M. Brandt", Territory: "Europe", EpicorQuoteNumber: "QT-2025-0091" },
+      { OpportunityNumber: "OPP-2025-0201", OpportunityName: "Vectronix Cernox and Teslameter Defense Contract", AccountName: "Vectronix Defense Research Inc", Stage: "Closed Won", CloseDate: "2025-03-18", Amount: 42000, OpportunityOwner: "J. Harmon", Territory: "East", EpicorQuoteNumber: "QT-2025-0098" },
+      { OpportunityNumber: "OPP-2025-0214", OpportunityName: "Nordvik Dilution Refrigerator Instrumentation Package", AccountName: "Nordvik Institute for Quantum Research", Stage: "Discovery", CloseDate: "2025-06-30", Amount: 28000, OpportunityOwner: "J. Harmon", Territory: "East", EpicorQuoteNumber: "" }
+    ],
+    quotes: [
+      { QuoteID: "QT-2025-0091", QuoteName: "Helmholtz F41 and 336 and PT-102 Package", AccountForQuote: "Rheintech Scientific GmbH", GrandTotal: 17480 },
+      { QuoteID: "QT-2025-0098", QuoteName: "Vectronix CX-1070 and F41 Defense Package", AccountForQuote: "Vectronix Defense Research Inc", GrandTotal: 42000 }
+    ]
+  },
+  pardot: {
+    prospects: [
+      { ProspectID: "MCAE-PRO-00881", Name: "Dr Evelyn Marsh", Email: "e.marsh@nordvik-quantum.edu", CompanyName: "Nordvik Institute for Quantum Research", Territory: "East", TotalScore: 117, InquiryRating: "Hot", SalesforceLeadID: "LD-00441", ConversionDate: "2025-02-28", SourceCampaign: "Dilution Refrigerator Instrumentation Spring 2025" },
+      { ProspectID: "MCAE-PRO-00744", Name: "Dr Jin-Ho Park", Email: "jh.park@seoulsami.kr", CompanyName: "Seoul Advanced Materials Institute", Territory: "Asia", TotalScore: 65, InquiryRating: "Warm", SalesforceLeadID: "LD-00448", ConversionDate: "2025-03-15", SourceCampaign: "Asia Semiconductor Instrumentation Q1 2025" },
+      { ProspectID: "MCAE-PRO-00901", Name: "Thomas Brecker", Email: "t.brecker@cryolab-munich.de", CompanyName: "CryoLab Munchen GmbH", Territory: "Europe", TotalScore: 55, InquiryRating: "Warm", SalesforceLeadID: "", ConversionDate: "2025-03-22", SourceCampaign: "EMEA Research Instrumentation Q1 2025" }
+    ]
+  },
+  marketingCloud: {
+    landing_pages: [
+      { LandingPageName: "Cernox Sensor Applications Dilution Refrigerator", TotalViews: 1244, UniqueViews: 892, UniqueFormSubmissions: 61, FormSubmissionRate: 6.8, UniqueClicks: 304 },
+      { LandingPageName: "Platinum Sensor Solutions Semiconductor and Industrial", TotalViews: 744, UniqueViews: 521, UniqueFormSubmissions: 26, FormSubmissionRate: 5.0, UniqueClicks: 144 },
+      { LandingPageName: "F41 Teslameter Magnetic Measurement Applications", TotalViews: 388, UniqueViews: 271, UniqueFormSubmissions: 12, FormSubmissionRate: 4.4, UniqueClicks: 98 }
+    ],
+    email_campaigns: [
+      { CampaignName: "Dilution Refrigerator Instrumentation Spring 2025", TotalSent: 1840, TotalDelivered: 1802, UniqueOpens: 612, OpenRate: 34.0, UniqueClicks: 188, ClickRate: 10.4, Bounces: 38, Unsubscribes: 4 },
+      { CampaignName: "Asia Semiconductor Instrumentation Q1 2025", TotalSent: 920, TotalDelivered: 901, UniqueOpens: 244, OpenRate: 27.1, UniqueClicks: 88, ClickRate: 9.8, Bounces: 19, Unsubscribes: 2 },
+      { CampaignName: "EMEA Research Instrumentation Q1 2025", TotalSent: 1420, TotalDelivered: 1388, UniqueOpens: 398, OpenRate: 28.7, UniqueClicks: 122, ClickRate: 8.8, Bounces: 32, Unsubscribes: 6 }
+    ]
+  }
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const fmt = n => '$' + Number(n).toLocaleString();
+const pct = n => Number(n).toFixed(1) + '%';
+
+// ── DERIVED METRICS — all calculated from live data ───────────────────────────
+function deriveMetrics(d) {
+  const opps = d.salesforce.opportunities || [];
+  const won = opps.filter(o => o.Stage === 'Closed Won');
+  const lost = opps.filter(o => o.Stage === 'Closed Lost');
+  const open = opps.filter(o => o.Stage !== 'Closed Won' && o.Stage !== 'Closed Lost');
+
+  const totalWon = won.reduce((s, o) => s + Number(o.Amount || 0), 0);
+  const totalLost = lost.reduce((s, o) => s + Number(o.Amount || 0), 0);
+  const totalOpen = open.reduce((s, o) => s + Number(o.Amount || 0), 0);
+  const totalAll = opps.reduce((s, o) => s + Number(o.Amount || 0), 0);
+  const winRate = opps.length > 0 ? Math.round((won.length / opps.length) * 100) : 0;
+
+  // Pipeline by stage
+  const stages = ['Discovery','Solution','Quote','Negotiation','Closed Won','Closed Lost'];
+  const byStage = {};
+  stages.forEach(s => {
+    const stageOpps = opps.filter(o => o.Stage === s);
+    byStage[s] = {
+      count: stageOpps.length,
+      total: stageOpps.reduce((sum, o) => sum + Number(o.Amount || 0), 0)
+    };
+  });
+  const maxStageTotal = Math.max(...Object.values(byStage).map(s => s.total), 1);
+
+  // Top accounts won — sorted by amount
+  const topWon = [...won].sort((a, b) => Number(b.Amount) - Number(a.Amount)).slice(0, 5);
+
+  // Top accounts open — sorted by amount
+  const topOpen = [...open].sort((a, b) => Number(b.Amount) - Number(a.Amount)).slice(0, 5);
+
+  // Rep performance — calculated from opportunities
+  const reps = {};
+  opps.forEach(o => {
+    const rep = o.OpportunityOwner || 'Unknown';
+    if (!reps[rep]) reps[rep] = { name: rep, territory: o.Territory || '', won: 0, wonDeals: 0, lost: 0, lostDeals: 0, open: 0, openDeals: 0, highConf: 0 };
+    if (o.Stage === 'Closed Won') { reps[rep].won += Number(o.Amount || 0); reps[rep].wonDeals++; }
+    if (o.Stage === 'Closed Lost') { reps[rep].lost += Number(o.Amount || 0); reps[rep].lostDeals++; }
+    if (o.Stage !== 'Closed Won' && o.Stage !== 'Closed Lost') { reps[rep].open += Number(o.Amount || 0); reps[rep].openDeals++; }
+    if (Number(o.Confidence || 0) >= 80 || Number(o.ProbabilityPercent || 0) >= 80) reps[rep].highConf += Number(o.Amount || 0);
+  });
+  const repList = Object.values(reps).map(r => ({
+    ...r,
+    total: r.wonDeals + r.lostDeals,
+    winRate: (r.wonDeals + r.lostDeals) > 0 ? Math.round((r.wonDeals / (r.wonDeals + r.lostDeals)) * 100) : 0
+  })).sort((a, b) => b.won - a.won);
+
+  // Inventory alerts
+  const invAlerts = (d.epicor.inventory || []).filter(i => Number(i.AvailableQty) < 0);
+
+  // Jobs at risk
+  const jobsAtRisk = (d.epicor.jobs || []).filter(j => {
+    if (j.Status !== 'OPEN' || !j.ShipByDate || !j.Due) return false;
+    return new Date(j.Due) > new Date(j.ShipByDate);
+  });
+
+  // Prospects
+  const prospects = d.pardot.prospects || [];
+  const avgScore = prospects.length > 0 ? Math.round(prospects.reduce((s, p) => s + Number(p.TotalScore || 0), 0) / prospects.length) : 0;
+
+  // Email campaigns
+  const campaigns = d.marketingCloud.email_campaigns || [];
+  const totalSent = campaigns.reduce((s, c) => s + Number(c.TotalSent || 0), 0);
+  const avgOpen = campaigns.length > 0 ? (campaigns.reduce((s, c) => s + Number(c.OpenRate || 0), 0) / campaigns.length).toFixed(1) : 0;
+
+  // Landing pages
+  const pages = d.marketingCloud.landing_pages || [];
+
+  // Alerts — generated dynamically from data
+  const alerts = [];
+  jobsAtRisk.forEach(j => {
+    alerts.push({ type: 'critical', title: 'Production Miss — ' + j.Part, body: 'Job ' + j.JobNumber + ' due ' + j.Due + ' — AFTER ship by date ' + j.ShipByDate + '. Only ' + j.Completed + ' of ' + j.OriginalProductionQty + ' units complete. Escalate to planner ' + j.Planner + '.' });
+  });
+  invAlerts.forEach(i => {
+    alerts.push({ type: 'critical', title: 'Inventory Shortage — ' + i.PartNum, body: i.PartDescription + ' available qty is ' + i.AvailableQty + '. Lead time ' + i.LeadTimeDays + ' days. Open orders cannot be fulfilled without action.' });
+  });
+  prospects.filter(p => Number(p.TotalScore) >= 80 && !p.SalesforceLeadID).forEach(p => {
+    alerts.push({ type: 'warning', title: 'High Score Prospect — No Lead Created', body: p.Name + ' at ' + p.CompanyName + ' — score ' + p.TotalScore + '. No Salesforce lead yet. Create lead and assign to territory rep.' });
+  });
+  prospects.filter(p => Number(p.TotalScore) >= 80 && p.SalesforceLeadID).forEach(p => {
+    alerts.push({ type: 'warning', title: 'High Priority Lead — Follow Up Needed', body: p.Name + ' at ' + p.CompanyName + ' — Pardot score ' + p.TotalScore + '. Mapped to lead ' + p.SalesforceLeadID + '. Recommend immediate sales outreach.' });
+  });
+  const missingEpicorOpps = won.filter(o => !o.EpicorQuoteNumber || o.EpicorQuoteNumber === '');
+  missingEpicorOpps.forEach(o => {
+    alerts.push({ type: 'warning', title: 'Closed Won — No Epicor Quote Number', body: o.OpportunityName + ' (' + fmt(o.Amount) + ') is Closed Won but has no Epicor Quote Number. Verify order entry.' });
+  });
+  const rfqInquiries = (d.salesforce.inquiries || []).filter(i => i.IsCurrentCustomer);
+  rfqInquiries.forEach(i => {
+    alerts.push({ type: 'success', title: 'Fast Path — Existing Customer RFQ', body: i.Company + ' submitted ' + i.InquiryID + ' for ' + i.InquiringAbout + ' — ' + i.Products + '. Existing customer match. Ready to process.' });
+  });
+
+  return { won, lost, open, opps, totalWon, totalLost, totalOpen, totalAll, winRate, byStage, maxStageTotal, topWon, topOpen, repList, invAlerts, jobsAtRisk, prospects, avgScore, campaigns, totalSent, avgOpen, pages, alerts };
+}
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+function Pill({ label, color }) { return <span className={`pill pill-${color}`}>{label}</span>; }
+
+function KpiCard({ label, value, sub, color = 'good' }) {
+  return (
+    <div className={`kpi-card ${color}`}>
+      <div className="kpi-label">{label}</div>
+      <div className="kpi-value">{value}</div>
+      {sub && <div className="kpi-sub" dangerouslySetInnerHTML={{ __html: sub }} />}
+    </div>
+  );
+}
+
+function Card({ title, tag, tagColor = 'blue', children, flush }) {
+  return (
+    <div className="card">
+      <div className="card-head">
+        <div className="card-title">{title}</div>
+        {tag && <span className={`tag tag-${tagColor}`}>{tag}</span>}
+      </div>
+      <div className={flush ? 'card-body-flush' : 'card-body'}>{children}</div>
+    </div>
+  );
+}
+
+function AlertCard({ type = 'critical', title, body }) {
+  const cls = { critical: '', warning: 'warn', success: 'success', info: 'info' }[type] || '';
+  const colors = { critical: 'alert', warning: 'warn', success: 'good', info: 'accent' };
+  return (
+    <div className={`alert-card ${cls}`}>
+      <div className="alert-header">
+        <div className="alert-title">{title}</div>
+        <Pill label={type.toUpperCase()} color={colors[type]} />
+      </div>
+      <div className="alert-body" dangerouslySetInnerHTML={{ __html: body }} />
+    </div>
+  );
+}
+
+function BarChart({ id, labels, datasets, height = 180, yFmt }) {
+  const ref = useRef(null);
+  const chartRef = useRef(null);
+  useEffect(() => {
+    if (chartRef.current) chartRef.current.destroy();
+    chartRef.current = new Chart(ref.current, {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: datasets.length > 1, labels: { font: { family: 'DM Sans', size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { family: 'DM Mono', size: 9 }, color: '#5a7a9a' } },
+          y: { grid: { color: '#d0dce8' }, ticks: { font: { family: 'DM Mono', size: 9 }, color: '#5a7a9a', callback: yFmt || (v => v) } }
+        }
+      }
+    });
+    return () => chartRef.current && chartRef.current.destroy();
+  }, [JSON.stringify(datasets)]);
+  return <div className="chart-wrap" style={{ height }}><canvas ref={ref}></canvas></div>;
+}
+
+// ── VIEWS ─────────────────────────────────────────────────────────────────────
+
+function SalesView({ d }) {
+  const m = deriveMetrics(d);
+  const stageColors = { 'Discovery': '#1a3a5c', 'Solution': '#2a5a8c', 'Quote': '#4a90c4', 'Negotiation': '#e67e22', 'Closed Won': '#1a6a9a', 'Closed Lost': '#c0392b' };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Sales Intelligence</div>
+        <div className="page-meta">{m.opps.length} total opportunities · {m.won.length} won · {m.open.length} open</div>
+      </div>
+
+      <div className="kpi-row kpi-4">
+        <KpiCard label="Total Closed Won" value={fmt(m.totalWon)} sub={`<span class="up">${m.won.length} deals</span>`} color="good" />
+        <KpiCard label="Open Pipeline" value={fmt(m.totalOpen)} sub={`<span class="up">${m.open.length} active deals</span>`} color="blue" />
+        <KpiCard label="Win Rate" value={m.winRate + '%'} sub={`${m.won.length}W · ${m.lost.length}L · ${m.opps.length} total`} color="accent" />
+        <KpiCard label="Closed Lost" value={fmt(m.totalLost)} sub={`<span class="dn">${m.lost.length} deals lost</span>`} color="alert" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Pipeline by Stage" tag="All Opportunities" tagColor="blue">
+          {Object.entries(m.byStage).map(([stage, data]) => (
+            <div key={stage} className="stage-row">
+              <div className="stage-label">{stage}</div>
+              <div className="bar-track"><div className="bar-fill" style={{ width: m.maxStageTotal > 0 ? (data.total / m.maxStageTotal * 100) + '%' : '0%', background: stageColors[stage] || '#4a90c4' }}></div></div>
+              <div className="stage-amt">{fmt(data.total)}</div>
+              <div className="stage-ct">{data.count}</div>
+            </div>
+          ))}
+        </Card>
+
+        <Card title="Top Accounts — Closed Won" tag="By Amount" tagColor="good" flush>
+          <table className="tbl">
+            <thead><tr><th>#</th><th>Account</th><th>Rep</th><th>Amount</th></tr></thead>
+            <tbody>
+              {m.topWon.map((o, i) => (
+                <tr key={o.OpportunityNumber}>
+                  <td><span style={{ fontFamily: 'Bebas Neue', fontSize: '1.1rem', color: 'var(--rule)' }}>0{i+1}</span></td>
+                  <td><strong>{o.AccountName}</strong></td>
+                  <td><span className="mono c-mid">{o.OpportunityOwner}</span></td>
+                  <td><span className="mono bold c-good">{fmt(o.Amount)}</span></td>
+                </tr>
+              ))}
+              {m.topWon.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--mid)', padding: '1rem' }}>No closed won opportunities</td></tr>}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <div className="grid-2">
+        <Card title="Top Accounts — Open Pipeline" tag="Active" tagColor="accent" flush>
+          <table className="tbl">
+            <thead><tr><th>#</th><th>Account</th><th>Stage</th><th>Amount</th><th>Close</th></tr></thead>
+            <tbody>
+              {m.topOpen.map((o, i) => (
+                <tr key={o.OpportunityNumber}>
+                  <td><span style={{ fontFamily: 'Bebas Neue', fontSize: '1.1rem', color: 'var(--rule)' }}>0{i+1}</span></td>
+                  <td><strong>{o.AccountName}</strong></td>
+                  <td><Pill label={o.Stage} color="accent" /></td>
+                  <td><span className="mono bold c-accent">{fmt(o.Amount)}</span></td>
+                  <td><span className="mono c-mid">{o.CloseDate}</span></td>
+                </tr>
+              ))}
+              {m.topOpen.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', color: 'var(--mid)', padding: '1rem' }}>No open opportunities</td></tr>}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="All Opportunities" tag="Full List" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Opportunity</th><th>Stage</th><th>Rep</th><th>Amount</th></tr></thead>
+            <tbody>
+              {m.opps.map(o => (
+                <tr key={o.OpportunityNumber}>
+                  <td style={{ fontSize: '11px', maxWidth: '200px' }}>{o.OpportunityName}</td>
+                  <td><Pill label={o.Stage} color={o.Stage === 'Closed Won' ? 'good' : o.Stage === 'Closed Lost' ? 'alert' : 'accent'} /></td>
+                  <td><span className="mono c-mid">{o.OpportunityOwner}</span></td>
+                  <td><span className={`mono bold ${o.Stage === 'Closed Won' ? 'c-good' : o.Stage === 'Closed Lost' ? 'c-alert' : 'c-accent'}`}>{fmt(o.Amount)}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <Card title="Rep Performance" tag="Calculated from Opportunities" tagColor="ink">
+        {m.repList.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.7rem' }}>
+            {m.repList.map(r => (
+              <div key={r.name} className="rep-card">
+                <div className="rep-name">{r.name}</div>
+                <div className="rep-territory">{r.territory} Territory</div>
+                <div className="rep-stat"><span className="rep-stat-label">Closed Won</span><span className={`rep-stat-val ${r.winRate >= 60 ? 'c-good' : 'c-warn'}`}>{fmt(r.won)}</span></div>
+                <div className="rep-stat"><span className="rep-stat-label">Deals Won</span><span className="rep-stat-val">{r.wonDeals}</span></div>
+                <div className="rep-stat"><span className="rep-stat-label">Open Pipeline</span><span className="rep-stat-val c-accent">{fmt(r.open)}</span></div>
+                <div className="rep-stat"><span className="rep-stat-label">Win Rate</span><span className={`rep-stat-val ${r.winRate >= 60 ? 'c-good' : 'c-warn'}`}>{r.winRate}%</span></div>
+                <div className="wl-bar">
+                  <div className="wl-w" style={{ width: r.winRate + '%' }}></div>
+                  <div className="wl-l" style={{ width: (100 - r.winRate) + '%' }}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : <p style={{ color: 'var(--mid)', textAlign: 'center', padding: '1rem' }}>No rep data available</p>}
+      </Card>
+
+      <Card title="Win / Loss by Rep" tag="Q2 2025" tagColor="blue">
+        {m.repList.length > 0 ? (
+          <table className="tbl">
+            <thead><tr><th>Rep</th><th>Territory</th><th>Won</th><th>Lost</th><th>Total</th><th>Win Rate</th><th>Bar</th></tr></thead>
+            <tbody>
+              {m.repList.map(r => (
+                <tr key={r.name}>
+                  <td><strong>{r.name}</strong></td>
+                  <td><span className="mono c-mid">{r.territory}</span></td>
+                  <td><span className="mono c-good">{r.wonDeals}</span></td>
+                  <td><span className="mono c-alert">{r.lostDeals}</span></td>
+                  <td><span className="mono">{r.total}</span></td>
+                  <td><span className={`mono bold ${r.winRate >= 60 ? 'c-good' : 'c-warn'}`}>{r.winRate}%</span></td>
+                  <td style={{ minWidth: '80px' }}>
+                    <div className="wl-bar" style={{ height: '6px' }}>
+                      <div className="wl-w" style={{ width: r.winRate + '%' }}></div>
+                      <div className="wl-l" style={{ width: (100 - r.winRate) + '%' }}></div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : null}
+      </Card>
+    </div>
+  );
+}
+
+function OperationsView({ d }) {
+  const jobs = d.epicor.jobs || [];
+  const inv = d.epicor.inventory || [];
+  const orders = d.epicor.sales_orders || [];
+  const openJobs = jobs.filter(j => j.Status === 'OPEN');
+  const invAlerts = inv.filter(i => Number(i.AvailableQty) < 0);
+  const jobsAtRisk = jobs.filter(j => j.Status === 'OPEN' && j.ShipByDate && j.Due && new Date(j.Due) > new Date(j.ShipByDate));
+  const totalOrderValue = orders.reduce((s, o) => s + Number(o.OrderTotal || 0), 0);
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Operations Intelligence</div>
+        <div className="page-meta">Epicor ERP · {orders.length} orders · {jobs.length} jobs · {inv.length} parts tracked</div>
+      </div>
+
+      <div className="kpi-row kpi-4">
+        <KpiCard label="Open Sales Orders" value={orders.length} sub={`Total value: ${fmt(totalOrderValue)}`} color="blue" />
+        <KpiCard label="Open Jobs" value={openJobs.length} sub="Currently in manufacturing" color="accent" />
+        <KpiCard label="Inventory Alerts" value={invAlerts.length} sub={`<span class="dn">Parts below zero available</span>`} color="alert" />
+        <KpiCard label="Jobs At Risk" value={jobsAtRisk.length} sub={`<span class="dn">Due after ship by date</span>`} color="alert" />
+      </div>
+
+      <Card title="Open Jobs — Production Status" tag="Live" tagColor="warn" flush>
+        <table className="tbl">
+          <thead><tr><th>Job #</th><th>Part</th><th>Description</th><th>Progress</th><th>Due</th><th>Ship By</th><th>Status</th></tr></thead>
+          <tbody>
+            {openJobs.map(j => {
+              const p = Math.round((Number(j.Completed) / Number(j.OriginalProductionQty)) * 100);
+              const late = j.ShipByDate && j.Due && new Date(j.Due) > new Date(j.ShipByDate);
+              return (
+                <tr key={j.JobNumber}>
+                  <td><span className="mono bold">{j.JobNumber}</span></td>
+                  <td><span className="mono">{j.Part}</span></td>
+                  <td style={{ fontSize: '11px' }}>{j.Description}</td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div className="bar-track" style={{ flex: 1 }}><div className="bar-fill" style={{ width: p + '%', background: p < 30 ? 'var(--alert)' : 'var(--accent)' }}></div></div>
+                      <span className="mono c-mid" style={{ fontSize: '10px', whiteSpace: 'nowrap' }}>{j.Completed}/{j.OriginalProductionQty}</span>
+                    </div>
+                  </td>
+                  <td><span className="mono c-mid">{j.Due}</span></td>
+                  <td><span className={`mono ${late ? 'c-alert bold' : 'c-mid'}`}>{j.ShipByDate}</span></td>
+                  <td><Pill label={late ? 'AT RISK' : 'ON TRACK'} color={late ? 'alert' : 'good'} /></td>
+                </tr>
+              );
+            })}
+            {openJobs.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--mid)', padding: '1rem' }}>No open jobs</td></tr>}
+          </tbody>
+        </table>
+      </Card>
+
+      <div className="grid-2">
+        <Card title="Inventory Availability" tag="All Parts" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Part</th><th>Description</th><th>On Hand</th><th>Allocated</th><th>Available</th><th>Lead</th></tr></thead>
+            <tbody>
+              {inv.map(i => (
+                <tr key={i.PartNum}>
+                  <td><span className="mono bold">{i.PartNum}</span></td>
+                  <td style={{ fontSize: '11px' }}>{i.PartDescription}</td>
+                  <td><span className="mono">{i.OnHandQty}</span></td>
+                  <td><span className="mono">{i.AllocatedQty}</span></td>
+                  <td><span className={`mono bold ${Number(i.AvailableQty) < 0 ? 'c-alert' : 'c-good'}`}>{i.AvailableQty}</span></td>
+                  <td><span className="mono c-mid">{i.LeadTimeDays}d</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="Open Sales Orders" tag="Active" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Order #</th><th>Customer</th><th>Ship By</th><th>Total</th></tr></thead>
+            <tbody>
+              {orders.map(o => (
+                <tr key={o.SalesOrderNumber}>
+                  <td><span className="mono bold">{o.SalesOrderNumber}</span></td>
+                  <td style={{ fontSize: '11px' }}>{o.CustomerID}</td>
+                  <td><span className="mono c-mid">{o.ShipBy}</span></td>
+                  <td><span className="mono bold c-good">{fmt(o.OrderTotal)}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function MarketingView({ d }) {
+  const pages = d.marketingCloud.landing_pages || [];
+  const campaigns = d.marketingCloud.email_campaigns || [];
+  const prospects = d.pardot.prospects || [];
+  const totalSent = campaigns.reduce((s, c) => s + Number(c.TotalSent || 0), 0);
+  const avgOpen = campaigns.length > 0 ? (campaigns.reduce((s, c) => s + Number(c.OpenRate || 0), 0) / campaigns.length).toFixed(1) : 0;
+  const avgScore = prospects.length > 0 ? Math.round(prospects.reduce((s, p) => s + Number(p.TotalScore || 0), 0) / prospects.length) : 0;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Marketing Intelligence</div>
+        <div className="page-meta">Pardot · Marketing Cloud · {prospects.length} prospects · {campaigns.length} campaigns · {pages.length} landing pages</div>
+      </div>
+
+      <div className="kpi-row kpi-4">
+        <KpiCard label="Active Prospects" value={prospects.length} sub="In Pardot nurture pipeline" color="blue" />
+        <KpiCard label="Avg Engagement Score" value={avgScore} sub={`<span class="up">Across all prospects</span>`} color="good" />
+        <KpiCard label="Total Emails Sent" value={totalSent.toLocaleString()} sub={`${campaigns.length} active campaigns`} color="accent" />
+        <KpiCard label="Avg Open Rate" value={avgOpen + '%'} sub={`<span class="up">Across all campaigns</span>`} color="good" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Landing Page Performance" tag="All Active" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Page</th><th>Views</th><th>Submissions</th><th>Rate</th><th>Clicks</th></tr></thead>
+            <tbody>
+              {pages.map(p => (
+                <tr key={p.LandingPageName}>
+                  <td style={{ fontSize: '11px', maxWidth: '180px' }}>{p.LandingPageName}</td>
+                  <td><span className="mono">{Number(p.UniqueViews).toLocaleString()}</span></td>
+                  <td><span className="mono">{p.UniqueFormSubmissions}</span></td>
+                  <td><span className={`mono bold ${Number(p.FormSubmissionRate) >= 5 ? 'c-good' : 'c-warn'}`}>{p.FormSubmissionRate}%</span></td>
+                  <td><span className="mono">{p.UniqueClicks}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+
+        <Card title="Email Campaign Performance" tag="All Campaigns" tagColor="good" flush>
+          <table className="tbl">
+            <thead><tr><th>Campaign</th><th>Sent</th><th>Opens</th><th>Open %</th><th>Click %</th></tr></thead>
+            <tbody>
+              {campaigns.map(c => (
+                <tr key={c.CampaignName}>
+                  <td style={{ fontSize: '11px', maxWidth: '180px' }}>{c.CampaignName}</td>
+                  <td><span className="mono">{Number(c.TotalSent).toLocaleString()}</span></td>
+                  <td><span className="mono">{c.UniqueOpens}</span></td>
+                  <td><span className={`mono bold ${Number(c.OpenRate) >= 30 ? 'c-good' : 'c-warn'}`}>{c.OpenRate}%</span></td>
+                  <td><span className={`mono bold ${Number(c.ClickRate) >= 10 ? 'c-good' : 'c-warn'}`}>{c.ClickRate}%</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <Card title="Prospect Pipeline — Pardot Engagement" tag="All Prospects" tagColor="blue" flush>
+        <table className="tbl">
+          <thead><tr><th>Prospect</th><th>Company</th><th>Territory</th><th>Score</th><th>Score Bar</th><th>Rating</th><th>SF Lead</th></tr></thead>
+          <tbody>
+            {[...prospects].sort((a, b) => Number(b.TotalScore) - Number(a.TotalScore)).map(p => (
+              <tr key={p.ProspectID}>
+                <td><strong>{p.Name}</strong><br /><span style={{ fontSize: '10px', color: 'var(--mid)' }}>{p.Email}</span></td>
+                <td style={{ fontSize: '11px' }}>{p.CompanyName}</td>
+                <td><Pill label={p.Territory} color={p.Territory === 'East' ? 'blue' : p.Territory === 'Asia' ? 'warn' : 'good'} /></td>
+                <td><span className={`mono bold ${Number(p.TotalScore) >= 100 ? 'c-alert' : Number(p.TotalScore) >= 70 ? 'c-warn' : 'c-mid'}`}>{p.TotalScore}</span></td>
+                <td style={{ minWidth: '100px' }}>
+                  <div className="bar-track"><div className="bar-fill" style={{ width: Math.min(Number(p.TotalScore), 120) / 1.2 + '%', background: Number(p.TotalScore) >= 100 ? 'var(--alert)' : Number(p.TotalScore) >= 70 ? 'var(--warn)' : 'var(--accent)' }}></div></div>
+                </td>
+                <td><Pill label={p.InquiryRating} color={p.InquiryRating === 'Hot' ? 'alert' : 'warn'} /></td>
+                <td><span className={`mono`} style={{ fontSize: '10px', color: p.SalesforceLeadID ? 'var(--good)' : 'var(--alert)' }}>{p.SalesforceLeadID || 'Not created'}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+}
+
+function AlertsView({ d }) {
+  const m = deriveMetrics(d);
+  const criticals = m.alerts.filter(a => a.type === 'critical');
+  const warnings = m.alerts.filter(a => a.type === 'warning');
+  const successes = m.alerts.filter(a => a.type === 'success');
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Alerts and Flags</div>
+        <div className="page-meta">AI Cross-System Analysis · {m.alerts.length} total items · Generated from live data</div>
+      </div>
+
+      <div className="kpi-row kpi-4">
+        <KpiCard label="Critical Alerts" value={criticals.length} sub={`<span class="dn">Immediate action required</span>`} color="alert" />
+        <KpiCard label="Warnings" value={warnings.length} sub={`<span class="wn">Review within 24 hours</span>`} color="warn" />
+        <KpiCard label="Fast Path Actions" value={successes.length} sub={`<span class="up">Ready to process</span>`} color="good" />
+        <KpiCard label="Total Alerts" value={m.alerts.length} sub="Across all systems" color="blue" />
+      </div>
+
+      <div className="grid-2">
+        <div>
+          {criticals.length > 0 && (
+            <div>
+              <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.6rem' }}>Critical</div>
+              {criticals.map((a, i) => <AlertCard key={i} type="critical" title={a.title} body={a.body} />)}
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.6rem' }}>Warnings</div>
+              {warnings.map((a, i) => <AlertCard key={i} type="warning" title={a.title} body={a.body} />)}
+            </div>
+          )}
+        </div>
+        <div>
+          {successes.length > 0 && (
+            <div>
+              <div style={{ fontFamily: 'DM Mono', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '0.6rem' }}>Fast Path — Ready to Process</div>
+              {successes.map((a, i) => <AlertCard key={i} type="success" title={a.title} body={a.body} />)}
+            </div>
+          )}
+          {m.alerts.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--mid)' }}>No alerts generated from current data</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExecutiveView({ d }) {
+  const m = deriveMetrics(d);
+  const topActions = m.alerts.filter(a => a.type === 'critical').slice(0, 3);
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">Executive Summary</div>
+        <div className="page-meta">All Systems · Calculated from live data</div>
+      </div>
+
+      <div className="kpi-row kpi-5">
+        <KpiCard label="Total Closed Won" value={fmt(m.totalWon)} sub={`<span class="up">${m.won.length} deals</span>`} color="good" />
+        <KpiCard label="Open Pipeline" value={fmt(m.totalOpen)} sub={`${m.open.length} active deals`} color="blue" />
+        <KpiCard label="Win Rate" value={m.winRate + '%'} sub={`${m.won.length}W · ${m.lost.length}L`} color="accent" />
+        <KpiCard label="Critical Alerts" value={m.alerts.filter(a => a.type === 'critical').length} sub={`<span class="dn">Need immediate action</span>`} color="alert" />
+        <KpiCard label="Fast Path Ready" value={m.alerts.filter(a => a.type === 'success').length} sub={`<span class="up">Auto-matched RFQs</span>`} color="good" />
+      </div>
+
+      <div className="grid-2">
+        <Card title="Pipeline by Stage" tag="All Opportunities" tagColor="blue">
+          {Object.entries(m.byStage).map(([stage, data]) => {
+            const colors = { 'Discovery': '#1a3a5c', 'Solution': '#2a5a8c', 'Quote': '#4a90c4', 'Negotiation': '#e67e22', 'Closed Won': '#1a6a9a', 'Closed Lost': '#c0392b' };
+            return (
+              <div key={stage} className="stage-row">
+                <div className="stage-label">{stage}</div>
+                <div className="bar-track"><div className="bar-fill" style={{ width: m.maxStageTotal > 0 ? (data.total / m.maxStageTotal * 100) + '%' : '0%', background: colors[stage] }}></div></div>
+                <div className="stage-amt">{fmt(data.total)}</div>
+                <div className="stage-ct">{data.count}</div>
+              </div>
+            );
+          })}
+        </Card>
+
+        <Card title="Systems Status" tag="Live" tagColor="good">
+          {[
+            { sys: 'Epicor ERP', detail: `${(d.epicor.sales_orders||[]).length} orders · ${(d.epicor.jobs||[]).length} jobs · ${(d.epicor.inventory||[]).length} parts` },
+            { sys: 'Salesforce CRM', detail: `${(d.salesforce.opportunities||[]).length} opps · ${(d.salesforce.leads||[]).length} leads · ${(d.salesforce.quotes||[]).length} quotes` },
+            { sys: 'Pardot MCAE', detail: `${(d.pardot.prospects||[]).length} prospects` },
+            { sys: 'Marketing Cloud', detail: `${(d.marketingCloud.landing_pages||[]).length} pages · ${(d.marketingCloud.email_campaigns||[]).length} campaigns` },
+          ].map(s => (
+            <div key={s.sys} className="metric-row">
+              <span className="metric-label"><strong>{s.sys}</strong><br /><span style={{ fontSize: '11px' }}>{s.detail}</span></span>
+              <Pill label="Connected" color="good" />
+            </div>
+          ))}
+        </Card>
+      </div>
+
+      <div className="grid-2">
+        <Card title="Top Actions Required" tag="From Live Alerts" tagColor="alert">
+          {topActions.length > 0 ? topActions.map((a, i) => (
+            <div key={i} className="metric-row">
+              <span style={{ fontFamily: 'Bebas Neue', fontSize: '1.4rem', color: 'var(--alert)', lineHeight: 1, flexShrink: 0 }}>{i+1}</span>
+              <span className="metric-label" style={{ color: 'var(--ink)', fontSize: '12px' }}>{a.title}</span>
+            </div>
+          )) : (
+            <div style={{ textAlign: 'center', padding: '1rem', color: 'var(--mid)' }}>No critical actions at this time</div>
+          )}
+        </Card>
+
+        <Card title="Rep Summary" tag="All Reps" tagColor="blue" flush>
+          <table className="tbl">
+            <thead><tr><th>Rep</th><th>Territory</th><th>Won</th><th>Win Rate</th></tr></thead>
+            <tbody>
+              {m.repList.map(r => (
+                <tr key={r.name}>
+                  <td><strong>{r.name}</strong></td>
+                  <td><span className="mono c-mid">{r.territory}</span></td>
+                  <td><span className="mono c-good">{fmt(r.won)}</span></td>
+                  <td><span className={`mono bold ${r.winRate >= 60 ? 'c-good' : 'c-warn'}`}>{r.winRate}%</span></td>
+                </tr>
+              ))}
+              {m.repList.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--mid)', padding: '1rem' }}>No rep data</td></tr>}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
+const TABS = [
+  { id: 'executive', label: 'Executive' },
+  { id: 'sales', label: 'Sales' },
+  { id: 'operations', label: 'Operations' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'alerts', label: 'Alerts & Flags' },
+];
+
+function App() {
+  const [active, setActive] = useState('executive');
+  const [liveData, setLiveData] = useState(FALLBACK);
+  const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleString());
+  const [fetchStatus, setFetchStatus] = useState('Connecting...');
+  const [isLive, setIsLive] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch(N8N_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const raw = await res.json();
+      const payload = Array.isArray(raw) ? raw[0] : raw;
+
+      let epicor = payload.epicor || payload.json?.epicor || liveData.epicor;
+      let salesforce = payload.salesforce || payload.json?.salesforce || liveData.salesforce;
+      let pardot = payload.pardot || payload.json?.pardot || liveData.pardot;
+      let marketingCloud = payload.marketingCloud || payload.json?.marketingCloud || liveData.marketingCloud;
+
+      if (payload.combined && typeof payload.combined === 'string') {
+        try {
+          const parsed = JSON.parse(payload.combined);
+          epicor = parsed.epicor || epicor;
+          salesforce = parsed.salesforce || salesforce;
+          pardot = parsed.pardot || pardot;
+          marketingCloud = parsed.marketingCloud || marketingCloud;
+        } catch(e) {}
+      }
+
+      setLiveData({ epicor, salesforce, pardot, marketingCloud });
+      setIsLive(true);
+      setFetchStatus('Live — n8n');
+      setLastUpdated(new Date().toLocaleString());
+    } catch (err) {
+      setFetchStatus('Fallback data');
+      setIsLive(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, POLL_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
+
+  const alertCount = deriveMetrics(liveData).alerts.length;
+
+  const views = {
+    executive: <ExecutiveView d={liveData} />,
+    sales: <SalesView d={liveData} />,
+    operations: <OperationsView d={liveData} />,
+    marketing: <MarketingView d={liveData} />,
+    alerts: <AlertsView d={liveData} />,
+  };
+
+  return (
+    <div>
+      <nav className="nav">
+        <div className="nav-logo">
+          <img src="https://raw.githubusercontent.com/jrjrdesigns/salesiq-demo/main/LakeShoreLogo.png" alt="Lake Shore Cryotronics" style={{ height: '44px', objectFit: 'contain' }} />
+        </div>
+        <div className="nav-tabs">
+          {TABS.map(t => (
+            <div key={t.id} className={`nav-tab ${active === t.id ? 'active' : ''}`} onClick={() => setActive(t.id)}>
+              {t.label}
+              {t.id === 'alerts' && alertCount > 0 && <span style={{ marginLeft: '0.4rem', background: 'var(--alert)', color: 'white', fontFamily: 'DM Mono', fontSize: '8px', padding: '0.1rem 0.35rem' }}>{alertCount}</span>}
+            </div>
+          ))}
+        </div>
+        <div className="nav-right">
+          <div className="nav-badge">Epicor · Salesforce · Pardot · Marketing Cloud</div>
+          <div className="live-indicator">
+            <div className="live-dot" style={{ background: isLive ? '#4a90c4' : 'var(--warn)' }}></div>
+            {fetchStatus}
+          </div>
+        </div>
+      </nav>
+
+      <div className="demo-banner">
+        ⚠ Simulated data — proof of concept &nbsp;·&nbsp; Source: {fetchStatus} &nbsp;·&nbsp; Polling every 5s
+      </div>
+
+      <div className="container">
+        {views[active]}
+        <div className="dash-footer">
+          <span>Lake Shore Cryotronics AI Intelligence Platform &nbsp;·&nbsp; Epicor · Salesforce · Pardot · Marketing Cloud</span>
+          <span>Last updated: {lastUpdated}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Client — Lake Shore Cryotronics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --off: #f0f4f8;
+    --ink: #0f2340;
+    --mid: #5a7a9a;
+    --rule: #d0dce8;
+    --good: #1a6a9a;
+    --accent: #4a90c4;
+    --alert: #c0392b;
+    --warn: #e67e22;
+    --good-light: #e8f4fa;
+    --alert-light: #fdf0ef;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--off);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #0f2340;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1.5rem;
+    border-bottom: 3px solid #4a90c4;
+  }
+
+  .header img { height: 40px; object-fit: contain; }
+
+  .header-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a9ab8;
+    border-left: 1px solid #1a3a5c;
+    padding-left: 1.5rem;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .page-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* SYNC INDICATOR */
+  .sync-banner {
+    background: var(--good-light);
+    border: 1px solid var(--good);
+    border-left: 4px solid var(--good);
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 13px;
+    color: var(--good);
+    display: none;
+  }
+
+  .sync-banner.visible { display: flex; }
+  .sync-banner.error { border-color: var(--alert); color: var(--alert); background: var(--alert-light); }
+
+  /* FORM LAYOUT */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .form-panel {
+    background: var(--white);
+    border: 1px solid var(--rule);
+  }
+
+  .panel-header {
+    padding: 0.8rem 1rem;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .panel-system {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+  }
+
+  .panel-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .tag-sf { background: #e8f4fa; color: #1a3a5c; }
+  .tag-ep { background: #fff5ee; color: #8a3a00; }
+
+  .panel-body { padding: 1rem; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin: 1rem 0 0.6rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label:first-child { margin-top: 0; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .field-row.full { grid-template-columns: 1fr; }
+  .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  label .req { color: var(--alert); }
+
+  input, select, textarea {
+    width: 100%;
+    border: 1px solid var(--rule);
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 0.45rem 0.6rem;
+    outline: none;
+    transition: border-color 0.15s;
+    border-radius: 0;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(74,144,196,0.1);
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7a9a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 1.8rem;
+  }
+
+  /* AUTO-POPULATED FIELD */
+  .auto-field input {
+    background: #f0f7ff;
+    border-color: var(--accent);
+    color: var(--mid);
+    font-style: italic;
+  }
+
+  .auto-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: #e8f4fb;
+    padding: 0.1rem 0.4rem;
+    display: inline-block;
+    margin-top: 0.1rem;
+  }
+
+  /* SUBMIT AREA */
+  .submit-area {
+    margin-top: 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .submit-info {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+
+  .submit-info strong { color: var(--ink); }
+
+  .submit-btn {
+    background: #0f2340;
+    color: var(--white);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .submit-btn:hover { background: #1a3a5c; }
+  .submit-btn:disabled { background: var(--mid); cursor: not-allowed; }
+
+  .submit-btn.loading::after {
+    content: '...';
+    animation: dots 1s infinite;
+  }
+
+  @keyframes dots {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+  }
+
+  /* PREVIEW PANEL */
+  .preview-panel {
+    margin-top: 1rem;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+  }
+
+  .preview-header {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .preview-body {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    font-size: 12px;
+  }
+
+  .preview-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .preview-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+    font-size: 11px;
+  }
+
+  .preview-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--mid);
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .preview-val { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 800px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .preview-body { grid-template-columns: 1fr; }
+    .submit-area { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://raw.githubusercontent.com/jrjrdesigns/salesiq-demo/main/LakeShoreLogo.png" alt="Lake Shore Cryotronics" />
+  <div class="header-title">New Client Entry &nbsp;·&nbsp; AI Sync Demo</div>
+</div>
+
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-title">Create New Client</div>
+    <div class="page-sub">Submitting this form creates the client in both Salesforce and Epicor simultaneously</div>
+  </div>
+
+  <div class="sync-banner" id="syncBanner">
+    <span id="syncIcon">✓</span>
+    <span id="syncMessage">Client created successfully in Salesforce and Epicor.</span>
+  </div>
+
+  <div class="form-grid">
+
+    <!-- SALESFORCE PANEL -->
+    <div class="form-panel">
+      <div class="panel-header">
+        <div class="panel-system">Salesforce CRM</div>
+        <span class="panel-tag tag-sf">Account Record</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="section-label">Account Information</div>
+        <div class="field-row full">
+          <div class="field">
+            <label>Account Name <span class="req">*</span></label>
+            <input type="text" id="sf_accountName" placeholder="e.g. MIT Lincoln Laboratory" oninput="syncFields()" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Account Owner <span class="req">*</span></label>
+            <select id="sf_accountOwner">
+              <option value="">Select rep...</option>
+              <option>J. Harmon</option>
+              <option>M. Brandt</option>
+              <option>K. Tanaka</option>
+              <option>D. Harmon</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Type</label>
+            <select id="sf_type">
+              <option value="">Select type...</option>
+              <option>Customer</option>
+              <option>Analyst</option>
+              <option>Competitor</option>
+              <option>Partner</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Parent Account</label>
+            <input type="text" id="sf_parentAccount" placeholder="If applicable" />
+          </div>
+          <div class="field">
+            <label>Phone</label>
+            <input type="tel" id="sf_phone" placeholder="e.g. 617-555-0100" oninput="syncFields()" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Industry</label>
+            <select id="sf_industry" oninput="syncFields()">
+              <option value="">Select industry...</option>
+              <option>University / Research</option>
+              <option>National Laboratory</option>
+              <option>Defense and Aerospace</option>
+              <option>Semiconductor Manufacturing</option>
+              <option>Industrial Manufacturing</option>
+              <option>Healthcare</option>
+              <option>Government</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Company Segment</label>
+            <select id="sf_companySegment" oninput="syncFields()">
+              <option value="">Select segment...</option>
+              <option>University / Research</option>
+              <option>National Laboratory</option>
+              <option>Defense and Aerospace</option>
+              <option>Semiconductor</option>
+              <option>Industrial Manufacturing</option>
+              <option>Scientific Instrumentation Dealer</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Federal EIN</label>
+            <input type="text" id="sf_ein" placeholder="e.g. 04-1234567" />
+          </div>
+          <div class="field">
+            <label>Number of Employees</label>
+            <input type="number" id="sf_employees" placeholder="e.g. 250" />
+          </div>
+        </div>
+
+        <div class="section-label">Additional Information</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Website URL</label>
+            <input type="url" id="sf_website" placeholder="https://..." />
+          </div>
+          <div class="field">
+            <label>Territory</label>
+            <select id="sf_territory" oninput="syncFields()">
+              <option value="">Select territory...</option>
+              <option>East</option>
+              <option>West</option>
+              <option>Europe</option>
+              <option>Asia</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field">
+            <label>Description</label>
+            <textarea id="sf_description" placeholder="Notes about this account..."></textarea>
+          </div>
+        </div>
+
+        <div class="section-label">Billing Address</div>
+        <div class="field-row full">
+          <div class="field">
+            <label>Street</label>
+            <input type="text" id="sf_billStreet" placeholder="Street address" oninput="syncFields()" />
+          </div>
+        </div>
+        <div class="field-row three">
+          <div class="field">
+            <label>City</label>
+            <input type="text" id="sf_billCity" placeholder="City" oninput="syncFields()" />
+          </div>
+          <div class="field">
+            <label>State</label>
+            <input type="text" id="sf_billState" placeholder="State" oninput="syncFields()" />
+          </div>
+          <div class="field">
+            <label>Zip</label>
+            <input type="text" id="sf_billZip" placeholder="Zip" oninput="syncFields()" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Country</label>
+            <input type="text" id="sf_billCountry" placeholder="Country" value="USA" oninput="syncFields()" />
+          </div>
+        </div>
+
+        <div class="section-label">System Information</div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Created By</label>
+            <input type="text" id="sf_createdBy" value="B2BMA Integration" readonly />
+            <span class="auto-badge">Auto-populated</span>
+          </div>
+          <div class="field auto-field">
+            <label>Created Date</label>
+            <input type="text" id="sf_createdDate" readonly />
+            <span class="auto-badge">Auto-populated</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- EPICOR PANEL -->
+    <div class="form-panel">
+      <div class="panel-header">
+        <div class="panel-system">Epicor ERP</div>
+        <span class="panel-tag tag-ep">Customer Record</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="section-label">Customer Information</div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Customer ID <span class="req">*</span></label>
+            <input type="text" id="ep_customerID" placeholder="Auto-generated" readonly />
+            <span class="auto-badge">AI Generated</span>
+          </div>
+          <div class="field">
+            <label>Customer Type</label>
+            <select id="ep_type">
+              <option value="Domestic">Domestic</option>
+              <option value="Dealer">Dealer</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field auto-field">
+            <label>Name <span class="req">*</span></label>
+            <input type="text" id="ep_name" placeholder="Synced from Salesforce" readonly />
+            <span class="auto-badge">Synced from Salesforce</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Territory</label>
+            <input type="text" id="ep_territory" placeholder="Synced from Salesforce" readonly />
+            <span class="auto-badge">Synced from Salesforce</span>
+          </div>
+          <div class="field auto-field">
+            <label>Salesperson</label>
+            <input type="text" id="ep_salesperson" placeholder="Synced from Salesforce" readonly />
+            <span class="auto-badge">Synced from Salesforce</span>
+          </div>
+        </div>
+
+        <div class="section-label">Classification</div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Company Segment</label>
+            <input type="text" id="ep_companySegment" placeholder="Synced from Salesforce" readonly />
+            <span class="auto-badge">Synced from Salesforce</span>
+          </div>
+          <div class="field">
+            <label>End User Industry Segment</label>
+            <select id="ep_endUserSegment">
+              <option value="">Select...</option>
+              <option>Cryogenics Research</option>
+              <option>Materials Science / Superconductivity</option>
+              <option>Defense Research</option>
+              <option>Semiconductor Manufacturing</option>
+              <option>Military Aviation</option>
+              <option>Neutron and Photon Research</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Cage Code</label>
+            <input type="text" id="ep_cageCode" placeholder="If applicable (DoD)" />
+          </div>
+          <div class="field">
+            <label>Shipping Qualifier</label>
+            <select id="ep_shippingQualifier">
+              <option value="Order Complete">Order Complete</option>
+              <option value="Not Complete">Not Complete</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-label">Address</div>
+        <div class="field-row full">
+          <div class="field auto-field">
+            <label>Address 1</label>
+            <input type="text" id="ep_address1" placeholder="Synced from Salesforce" readonly />
+            <span class="auto-badge">Synced from Salesforce</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Address 2</label>
+            <input type="text" id="ep_address2" placeholder="Suite, floor, etc." />
+          </div>
+          <div class="field">
+            <label>Address 3</label>
+            <input type="text" id="ep_address3" placeholder="If applicable" />
+          </div>
+        </div>
+        <div class="field-row three">
+          <div class="field auto-field">
+            <label>City</label>
+            <input type="text" id="ep_city" placeholder="Synced" readonly />
+            <span class="auto-badge">Synced</span>
+          </div>
+          <div class="field auto-field">
+            <label>State</label>
+            <input type="text" id="ep_state" placeholder="Synced" readonly />
+            <span class="auto-badge">Synced</span>
+          </div>
+          <div class="field auto-field">
+            <label>Postal Code</label>
+            <input type="text" id="ep_zip" placeholder="Synced" readonly />
+            <span class="auto-badge">Synced</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Country</label>
+            <input type="text" id="ep_country" placeholder="Synced" readonly />
+            <span class="auto-badge">Synced</span>
+          </div>
+          <div class="field auto-field">
+            <label>Phone</label>
+            <input type="text" id="ep_phone" placeholder="Synced" readonly />
+            <span class="auto-badge">Synced</span>
+          </div>
+        </div>
+
+        <div class="section-label">System Information</div>
+        <div class="field-row">
+          <div class="field auto-field">
+            <label>Entry Person</label>
+            <input type="text" value="AI-LAYER" readonly />
+            <span class="auto-badge">Auto-populated</span>
+          </div>
+          <div class="field auto-field">
+            <label>Entry Date</label>
+            <input type="text" id="ep_entryDate" readonly />
+            <span class="auto-badge">Auto-populated</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SUBMIT AREA -->
+  <div class="submit-area">
+    <div class="submit-info">
+      <strong>What happens when you submit:</strong><br>
+      The AI layer creates this client in <strong>Salesforce</strong> and <strong>Epicor</strong> simultaneously. Fields marked "Synced from Salesforce" are mapped automatically — no duplicate entry required. The dashboard will reflect the new client within 5 seconds.
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+      Create Client in Both Systems
+    </button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel" id="previewPanel" style="display:none">
+    <div class="preview-header">
+      <span>Payload Preview — What gets sent to n8n</span>
+      <span id="previewTimestamp"></span>
+    </div>
+    <div class="preview-body" id="previewBody"></div>
+  </div>
+
+</div>
+
+<script>
+  const N8N_WEBHOOK = 'https://james-francis.app.n8n.cloud/webhook/new-client';
+
+  // Set auto-populated dates
+  const now = new Date().toISOString();
+  document.getElementById('sf_createdDate').value = new Date().toLocaleString();
+  document.getElementById('ep_entryDate').value = new Date().toLocaleString();
+
+  // Sync fields from Salesforce to Epicor
+  function syncFields() {
+    const name = document.getElementById('sf_accountName').value;
+    const territory = document.getElementById('sf_territory').value;
+    const owner = document.getElementById('sf_accountOwner').value;
+    const segment = document.getElementById('sf_companySegment').value;
+    const street = document.getElementById('sf_billStreet').value;
+    const city = document.getElementById('sf_billCity').value;
+    const state = document.getElementById('sf_billState').value;
+    const zip = document.getElementById('sf_billZip').value;
+    const country = document.getElementById('sf_billCountry').value;
+    const phone = document.getElementById('sf_phone').value;
+
+    // Auto-generate Customer ID from name
+    if (name) {
+      const words = name.trim().toUpperCase().split(' ');
+      const id = words.slice(0, 2).map(w => w.slice(0, 4)).join('-');
+      document.getElementById('ep_customerID').value = id;
+      document.getElementById('ep_name').value = name;
+    }
+
+    if (territory) document.getElementById('ep_territory').value = territory;
+    if (owner) document.getElementById('ep_salesperson').value = owner;
+    if (segment) document.getElementById('ep_companySegment').value = segment;
+    if (street) document.getElementById('ep_address1').value = street;
+    if (city) document.getElementById('ep_city').value = city;
+    if (state) document.getElementById('ep_state').value = state;
+    if (zip) document.getElementById('ep_zip').value = zip;
+    if (country) document.getElementById('ep_country').value = country;
+    if (phone) document.getElementById('ep_phone').value = phone;
+
+    updatePreview();
+  }
+
+  function buildPayload() {
+    return {
+      action: 'new_client',
+      timestamp: new Date().toISOString(),
+      salesforce: {
+        AccountName: document.getElementById('sf_accountName').value,
+        ParentAccount: document.getElementById('sf_parentAccount').value,
+        AccountOwner: document.getElementById('sf_accountOwner').value,
+        Type: document.getElementById('sf_type').value,
+        Phone: document.getElementById('sf_phone').value,
+        Industry: document.getElementById('sf_industry').value,
+        CompanySegment: document.getElementById('sf_companySegment').value,
+        FederalEIN: document.getElementById('sf_ein').value,
+        NumberOfEmployees: document.getElementById('sf_employees').value,
+        Website: document.getElementById('sf_website').value,
+        Territory: document.getElementById('sf_territory').value,
+        Description: document.getElementById('sf_description').value,
+        BillingStreet: document.getElementById('sf_billStreet').value,
+        BillingCity: document.getElementById('sf_billCity').value,
+        BillingState: document.getElementById('sf_billState').value,
+        BillingZip: document.getElementById('sf_billZip').value,
+        BillingCountry: document.getElementById('sf_billCountry').value,
+        CreatedBy: 'B2BMA Integration',
+        CreatedDate: new Date().toISOString()
+      },
+      epicor: {
+        CustomerID: document.getElementById('ep_customerID').value,
+        Name: document.getElementById('ep_name').value,
+        Type: document.getElementById('ep_type').value,
+        Territory: document.getElementById('ep_territory').value,
+        Salesperson: document.getElementById('ep_salesperson').value,
+        CompanySegment: document.getElementById('ep_companySegment').value,
+        EndUserIndustrySegment: document.getElementById('ep_endUserSegment').value,
+        CageCode: document.getElementById('ep_cageCode').value,
+        ShippingQualifier: document.getElementById('ep_shippingQualifier').value,
+        Address1: document.getElementById('ep_address1').value,
+        Address2: document.getElementById('ep_address2').value,
+        Address3: document.getElementById('ep_address3').value,
+        City: document.getElementById('ep_city').value,
+        State: document.getElementById('ep_state').value,
+        PostalCode: document.getElementById('ep_zip').value,
+        Country: document.getElementById('ep_country').value,
+        Phone: document.getElementById('ep_phone').value,
+        EntryPerson: 'AI-LAYER',
+        EntryDate: new Date().toISOString()
+      }
+    };
+  }
+
+  function updatePreview() {
+    const payload = buildPayload();
+    if (!payload.salesforce.AccountName) {
+      document.getElementById('previewPanel').style.display = 'none';
+      return;
+    }
+    document.getElementById('previewPanel').style.display = 'block';
+    document.getElementById('previewTimestamp').textContent = new Date().toLocaleTimeString();
+
+    const sf = payload.salesforce;
+    const ep = payload.epicor;
+
+    document.getElementById('previewBody').innerHTML = `
+      <div>
+        <div class="preview-section-title">Salesforce Account</div>
+        ${Object.entries(sf).filter(([k,v]) => v).map(([k,v]) => `
+          <div class="preview-row">
+            <span class="preview-key">${k}</span>
+            <span class="preview-val">${v}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div>
+        <div class="preview-section-title">Epicor Customer</div>
+        ${Object.entries(ep).filter(([k,v]) => v).map(([k,v]) => `
+          <div class="preview-row">
+            <span class="preview-key">${k}</span>
+            <span class="preview-val">${v}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  async function submitForm() {
+    const name = document.getElementById('sf_accountName').value.trim();
+    const owner = document.getElementById('sf_accountOwner').value;
+
+    if (!name) { alert('Account Name is required'); return; }
+    if (!owner) { alert('Account Owner is required'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating in Both Systems...';
+
+    const payload = buildPayload();
+
+    try {
+      const res = await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const banner = document.getElementById('syncBanner');
+      banner.className = 'sync-banner visible';
+      document.getElementById('syncIcon').textContent = '✓';
+      document.getElementById('syncMessage').innerHTML =
+        `<strong>${name}</strong> created successfully in both Salesforce and Epicor. The dashboard will update within 5 seconds.`;
+
+      btn.textContent = 'Client Created Successfully';
+      btn.style.background = 'var(--good)';
+
+      // Scroll to top to show banner
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      const banner = document.getElementById('syncBanner');
+      banner.className = 'sync-banner visible error';
+      document.getElementById('syncIcon').textContent = '✗';
+      document.getElementById('syncMessage').textContent = 'Error: Could not reach n8n webhook. Check that the workflow is published and the /new-client webhook is active.';
+
+      btn.disabled = false;
+      btn.textContent = 'Retry';
+    }
+  }
+</script>
+</body>
+</html>

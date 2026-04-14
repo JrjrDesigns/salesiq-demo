@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Intelligence Platform — Architecture Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2340;
+    --blue: #1a3a5c;
+    --accent: #4a90c4;
+    --mid: #5a7a9a;
+    --rule: #d0dce8;
+    --off: #f0f4f8;
+    --white: #ffffff;
+    --alert: #c0392b;
+    --good: #1a6a9a;
+    --warn: #e67e22;
+    --alert-light: #fdf0ef;
+    --good-light: #e8f4fa;
+    --warn-light: #fff5ee;
+    --accent-light: #eaf4fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #ffffff;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10pt;
+    line-height: 1.4;
+    padding: 0.5in;
+    width: 8.5in;
+    margin: 0 auto;
+  }
+
+  /* PAGE HEADER */
+  .doc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid var(--navy);
+  }
+
+  .doc-header-left h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+
+  .doc-header-left p {
+    font-family: 'DM Mono', monospace;
+    font-size: 8pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .doc-header-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 8pt;
+    color: var(--mid);
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* PIPELINE WRAPPER */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* PIPELINE ROW — contains label + nodes */
+  .pipeline-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  /* LAYER LABEL */
+  .layer-label {
+    width: 0.9in;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding-right: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .layer-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .layer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: right;
+    line-height: 1.3;
+  }
+
+  /* NODE AREA */
+  .node-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0.4rem 0;
+    position: relative;
+  }
+
+  /* CONNECTOR — arrow between nodes */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 0.35in;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .connector-line {
+    width: 2px;
+    background: var(--rule);
+    flex: 1;
+    min-height: 0.3in;
+  }
+
+  .connector-arrow {
+    font-size: 10pt;
+    color: var(--mid);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .connector-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 6pt;
+    color: var(--mid);
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  /* HORIZONTAL CONNECTOR */
+  .h-connector {
+    display: flex;
+    align-items: center;
+    width: 0.25in;
+    flex-shrink: 0;
+  }
+
+  .h-line {
+    height: 2px;
+    background: var(--rule);
+    flex: 1;
+  }
+
+  .h-arrow {
+    font-size: 8pt;
+    color: var(--mid);
+    line-height: 1;
+  }
+
+  /* NODE */
+  .node {
+    background: var(--white);
+    border: 1.5px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.4rem 0.5rem;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .node-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 2px;
+  }
+
+  .node-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 9pt;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+
+  .node-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5pt;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+
+  .node-detail span {
+    display: block;
+  }
+
+  /* NODE VARIANTS */
+  .node.trigger { border-color: var(--navy); border-top: 3px solid var(--navy); }
+  .node.http { border-top: 3px solid var(--accent); }
+  .node.code { border-top: 3px solid var(--blue); }
+  .node.merge { border-top: 3px solid var(--mid); }
+  .node.ai { border-top: 3px solid var(--good); background: var(--good-light); }
+  .node.rule { border-top: 3px solid var(--warn); background: var(--warn-light); }
+  .node.db { border-top: 3px solid var(--navy); background: #e8ecf4; }
+  .node.webhook { border-top: 3px solid var(--alert); }
+  .node.respond { border-top: 3px solid var(--good); }
+  .node.parallel { border-top: 3px solid var(--accent); background: var(--accent-light); }
+
+  /* PARALLEL BLOCK */
+  .parallel-block {
+    display: flex;
+    gap: 0.3rem;
+    align-items: flex-start;
+  }
+
+  .parallel-nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  /* SECTION DIVIDER */
+  .section-break {
+    display: flex;
+    align-items: center;
+    margin: 0.6rem 0 0.4rem 0.9in;
+    gap: 0.5rem;
+  }
+
+  .section-break-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-break-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 7pt;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    white-space: nowrap;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--rule);
+    background: var(--off);
+  }
+
+  /* VERTICAL FLOW INDICATOR */
+  .v-flow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.1rem 0;
+    margin-left: 0.9in;
+    color: var(--mid);
+    font-size: 12pt;
+    line-height: 1;
+  }
+
+  /* SPLIT INDICATOR — when flow splits into parallel */
+  .split-row {
+    display: flex;
+    align-items: flex-start;
+    margin-left: 0.9in;
+    gap: 0;
+  }
+
+  .split-line-v {
+    width: 2px;
+    background: var(--rule);
+    height: 0.3in;
+  }
+
+  .split-branches {
+    display: flex;
+    gap: 0.4rem;
+    align-items: flex-start;
+    padding-top: 0.1rem;
+  }
+
+  .split-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .split-h-line {
+    height: 2px;
+    background: var(--rule);
+    width: 0.3in;
+  }
+
+  /* JOIN INDICATOR */
+  .join-row {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 0.9in;
+    gap: 0;
+    padding-bottom: 0.1rem;
+  }
+
+  /* LEGEND */
+  .legend {
+    margin-top: 1rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 7pt;
+    color: var(--mid);
+  }
+
+  .legend-swatch {
+    width: 12px;
+    height: 8px;
+    border-radius: 1px;
+    border: 1px solid var(--rule);
+  }
+
+  /* ACTION WORKFLOWS SECTION */
+  .action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .action-workflow {
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--alert);
+  }
+
+  .action-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 0.3rem 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .action-nodes {
+    padding: 0.4rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .action-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.3rem;
+    font-size: 8pt;
+  }
+
+  .action-arrow {
+    color: var(--mid);
+    font-size: 8pt;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .action-node-name {
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 8pt;
+  }
+
+  .action-node-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 6.5pt;
+    color: var(--mid);
+    line-height: 1.3;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 1rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 7pt;
+    color: var(--mid);
+  }
+
+  /* PAGE BREAK */
+  .page-break { page-break-before: always; padding-top: 0.3in; }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { padding: 0.4in; width: 100%; }
+    .page-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="doc-header-left">
+    <h1>AI Intelligence Platform</h1>
+    <p>Production Architecture — Node to Node Map &nbsp;·&nbsp; Lake Shore Cryotronics &nbsp;·&nbsp; Confidential</p>
+  </div>
+  <div class="doc-header-right">
+    Scheduled Pipeline<br>
+    4 Source Systems<br>
+    1 Database<br>
+    4–5 Workflows
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  SCHEDULED PIPELINE                                        -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<div class="section-break">
+  <div class="section-break-line"></div>
+  <div class="section-break-label">Workflow 1 — Scheduled Pipeline (runs every 15–60 min)</div>
+  <div class="section-break-line"></div>
+</div>
+
+<div class="pipeline">
+
+  <!-- TRIGGER -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Trigger</div>
+      <div class="layer-name">Schedule</div>
+    </div>
+    <div class="node-area">
+      <div class="node trigger" style="width:1.6in">
+        <div class="node-type">n8n Node</div>
+        <div class="node-name">Schedule Trigger</div>
+        <div class="node-detail">
+          <span>Every 15–60 minutes</span>
+          <span>Configurable interval</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-flow">↓</div>
+
+  <!-- LAYER 1 — DATA COLLECTION (4 parallel) -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 1</div>
+      <div class="layer-name">Data Collection<br>API Calls</div>
+    </div>
+    <div class="node-area" style="gap:0.25rem; flex-wrap:wrap;">
+
+      <div class="node http" style="width:1.55in">
+        <div class="node-type">HTTP Request</div>
+        <div class="node-name">Epicor REST API</div>
+        <div class="node-detail">
+          <span>GET /Customer (active)</span>
+          <span>GET /SalesOrder (open)</span>
+          <span>GET /JobEntry (open)</span>
+          <span>GET /PartBin (all)</span>
+          <span style="color:var(--accent);margin-top:2px">Auth: API Key</span>
+        </div>
+      </div>
+
+      <div class="node http" style="width:1.55in">
+        <div class="node-type">HTTP Request</div>
+        <div class="node-name">Salesforce REST API</div>
+        <div class="node-detail">
+          <span>SOQL: Opportunities</span>
+          <span>SOQL: Leads (open)</span>
+          <span>SOQL: Quotes</span>
+          <span>SOQL: Inquiries</span>
+          <span style="color:var(--accent);margin-top:2px">Auth: OAuth 2.0</span>
+        </div>
+      </div>
+
+      <div class="node http" style="width:1.55in">
+        <div class="node-type">HTTP Request</div>
+        <div class="node-name">Pardot v5 API</div>
+        <div class="node-detail">
+          <span>GET /prospect (active)</span>
+          <span>GET /campaign</span>
+          <span>GET /form (RFQ)</span>
+          <span>&nbsp;</span>
+          <span style="color:var(--accent);margin-top:2px">Auth: SF OAuth</span>
+        </div>
+      </div>
+
+      <div class="node http" style="width:1.55in">
+        <div class="node-type">HTTP Request</div>
+        <div class="node-name">Marketing Cloud API</div>
+        <div class="node-detail">
+          <span>GET /campaigns</span>
+          <span>GET /assets (pages)</span>
+          <span>GET /email/events</span>
+          <span>&nbsp;</span>
+          <span style="color:var(--accent);margin-top:2px">Auth: Installed Pkg</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="v-flow">↓</div>
+
+  <!-- LAYER 1b — PAGINATION -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 1b</div>
+      <div class="layer-name">Pagination</div>
+    </div>
+    <div class="node-area">
+      <div class="node code" style="width:5.5in">
+        <div class="node-type">n8n Loop Node (per system)</div>
+        <div class="node-name">Pagination Handler</div>
+        <div class="node-detail" style="display:flex;gap:1rem">
+          <span>Continues API calls until all pages retrieved</span>
+          <span>·</span>
+          <span>Applies per-system rate limits</span>
+          <span>·</span>
+          <span>Logs API errors without stopping pipeline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-flow">↓</div>
+
+  <!-- LAYER 2 — NORMALIZATION (4 parallel) -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 2</div>
+      <div class="layer-name">Normalization<br>One per system</div>
+    </div>
+    <div class="node-area" style="gap:0.25rem; flex-wrap:wrap;">
+
+      <div class="node code" style="width:1.55in">
+        <div class="node-type">Code Node</div>
+        <div class="node-name">Epicor Normalizer</div>
+        <div class="node-detail">
+          <span>Standardize field names</span>
+          <span>Convert dates → ISO 8601</span>
+          <span>Normalize customer names</span>
+          <span>Flag missing fields</span>
+        </div>
+      </div>
+
+      <div class="node code" style="width:1.55in">
+        <div class="node-type">Code Node</div>
+        <div class="node-name">Salesforce Normalizer</div>
+        <div class="node-detail">
+          <span>Map SF fields → schema</span>
+          <span>Resolve owner IDs → names</span>
+          <span>Normalize stage names</span>
+          <span>Convert currency fields</span>
+        </div>
+      </div>
+
+      <div class="node code" style="width:1.55in">
+        <div class="node-type">Code Node</div>
+        <div class="node-name">Pardot Normalizer</div>
+        <div class="node-detail">
+          <span>Standardize score fields</span>
+          <span>Map campaign IDs → names</span>
+          <span>Resolve lead IDs → SF records</span>
+          <span>Flag unmatched prospects</span>
+        </div>
+      </div>
+
+      <div class="node code" style="width:1.55in">
+        <div class="node-type">Code Node</div>
+        <div class="node-name">MC Normalizer</div>
+        <div class="node-detail">
+          <span>Standardize metric names</span>
+          <span>Calc derived metrics</span>
+          <span>Map campaign IDs → names</span>
+          <span>Submission rate, click rate</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="v-flow">↓</div>
+
+  <!-- LAYER 3 — MERGE -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 3</div>
+      <div class="layer-name">Merge</div>
+    </div>
+    <div class="node-area">
+      <div class="node merge" style="width:5.5in">
+        <div class="node-type">n8n Merge Node — Append Mode</div>
+        <div class="node-name">Merge All Four Streams</div>
+        <div class="node-detail" style="display:flex;gap:1rem">
+          <span>Epicor data ↘</span>
+          <span>Salesforce data ↘</span>
+          <span>Pardot data ↗</span>
+          <span>Marketing Cloud data ↗</span>
+          <span style="color:var(--navy);font-weight:500">→ One combined dataset</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-flow">↓</div>
+
+  <!-- LAYER 4 — UNIFIED DATA LAYER -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 4</div>
+      <div class="layer-name">Unified Data<br>Layer</div>
+    </div>
+    <div class="node-area">
+      <div class="node code" style="width:5.5in">
+        <div class="node-type">Code Node — Assembly</div>
+        <div class="node-name">Unified Data Layer</div>
+        <div class="node-detail" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.3rem;margin-top:3px">
+          <span><strong>epicor:</strong><br>customers<br>sales_orders<br>jobs<br>inventory</span>
+          <span><strong>salesforce:</strong><br>opportunities<br>leads<br>inquiries<br>quotes</span>
+          <span><strong>pardot:</strong><br>prospects<br>campaigns<br>rfq_inquiries</span>
+          <span><strong>marketingCloud:</strong><br>campaigns<br>landing_pages<br>email_performance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v-flow">↓ (splits into two parallel processes)</div>
+
+  <!-- LAYER 5 — PARALLEL: RULE ENGINE + AI -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 5</div>
+      <div class="layer-name">Intelligence<br>Parallel</div>
+    </div>
+    <div class="node-area" style="gap:0.4rem; align-items:flex-start;">
+
+      <div class="node rule" style="width:2.6in">
+        <div class="node-type">Code Node — Deterministic</div>
+        <div class="node-name">Rule Engine</div>
+        <div class="node-detail">
+          <span>✓ Inventory available qty &lt; 0</span>
+          <span>✓ Job due date &gt; ship by date</span>
+          <span>✓ Closed Won — no Epicor order #</span>
+          <span>✓ RFQ matches existing customer</span>
+          <span>✓ Lead &gt; 14 days no activity</span>
+          <span style="margin-top:3px;color:var(--warn);font-weight:600">Output: structured alert array</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:0.25rem;width:2.85in">
+        <div class="node ai" style="width:100%">
+          <div class="node-type">Ollama Node — Llama 3 70B (local)</div>
+          <div class="node-name">AI Call 1 — Sales Intelligence</div>
+          <div class="node-detail">
+            <span>Input: opportunities + leads + quotes</span>
+            <span>Output: insights, risks, actions (JSON)</span>
+          </div>
+        </div>
+        <div class="node ai" style="width:100%">
+          <div class="node-type">Ollama Node — Llama 3 70B (local)</div>
+          <div class="node-name">AI Call 2 — Operations Risk</div>
+          <div class="node-detail">
+            <span>Input: jobs + inventory + orders</span>
+            <span>Output: at-risk jobs, shortages (JSON)</span>
+          </div>
+        </div>
+        <div class="node ai" style="width:100%">
+          <div class="node-type">Ollama Node — Llama 3 70B (local)</div>
+          <div class="node-name">AI Call 3 — Marketing Intelligence</div>
+          <div class="node-detail">
+            <span>Input: prospects + campaigns + pages</span>
+            <span>Output: high priority prospects (JSON)</span>
+          </div>
+        </div>
+        <div class="node ai" style="width:100%">
+          <div class="node-type">Ollama Node — Llama 3 70B (local)</div>
+          <div class="node-name">AI Call 4 — Cross-System Alerts</div>
+          <div class="node-detail">
+            <span>Input: rule output + unified summary</span>
+            <span>Output: prioritized actions (JSON)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="v-flow">↓ (both outputs merge)</div>
+
+  <!-- LAYER 6 — DATABASE WRITE -->
+  <div class="pipeline-row">
+    <div class="layer-label">
+      <div class="layer-num">Layer 6</div>
+      <div class="layer-name">Database<br>Write</div>
+    </div>
+    <div class="node-area">
+      <div class="node db" style="width:5.5in">
+        <div class="node-type">n8n Postgres Node — Upsert</div>
+        <div class="node-name">PostgreSQL Database Write</div>
+        <div class="node-detail" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.3rem;margin-top:3px">
+          <span><strong>Upsert:</strong><br>customers<br>sales_orders<br>jobs</span>
+          <span><strong>Upsert:</strong><br>inventory<br>opportunities<br>leads</span>
+          <span><strong>Upsert:</strong><br>inquiries<br>quotes<br>prospects</span>
+          <span><strong>Upsert:</strong><br>campaigns<br>landing_pages<br>email_perf</span>
+          <span><strong>Insert:</strong><br>ai_analysis<br>alerts<br>pipeline_log</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  PRESENTATION LAYER                                        -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<div class="section-break" style="margin-top:0.8rem">
+  <div class="section-break-line"></div>
+  <div class="section-break-label">Presentation Layer — Dashboard reads from database directly</div>
+  <div class="section-break-line"></div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;margin-left:0.9in;margin-bottom:0.5rem">
+  <div class="node respond" style="width:100%">
+    <div class="node-type">DB Query</div>
+    <div class="node-name" style="font-size:8pt">Executive View</div>
+    <div class="node-detail">Aggregated summaries<br>all tables</div>
+  </div>
+  <div class="node respond" style="width:100%">
+    <div class="node-type">DB Query</div>
+    <div class="node-name" style="font-size:8pt">Sales View</div>
+    <div class="node-detail">opportunities<br>leads · quotes</div>
+  </div>
+  <div class="node respond" style="width:100%">
+    <div class="node-type">DB Query</div>
+    <div class="node-name" style="font-size:8pt">Operations View</div>
+    <div class="node-detail">jobs · inventory<br>sales_orders</div>
+  </div>
+  <div class="node respond" style="width:100%">
+    <div class="node-type">DB Query</div>
+    <div class="node-name" style="font-size:8pt">Marketing View</div>
+    <div class="node-detail">prospects<br>campaigns · pages</div>
+  </div>
+  <div class="node respond" style="width:100%">
+    <div class="node-type">DB Query</div>
+    <div class="node-name" style="font-size:8pt">Alerts View</div>
+    <div class="node-detail">alerts · ai_analysis<br>latest run only</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  ACTION WORKFLOWS                                          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<div class="page-break"></div>
+
+<div class="doc-header" style="margin-bottom:0.8rem">
+  <div class="doc-header-left">
+    <h1 style="font-size:1.2rem">Action Workflows</h1>
+    <p>Triggered by form submissions — separate from scheduled pipeline</p>
+  </div>
+  <div class="doc-header-right">Page 2 of 2</div>
+</div>
+
+<div class="action-grid">
+
+  <!-- NEW CLIENT -->
+  <div class="action-workflow">
+    <div class="action-header">Workflow 2 — New Client &nbsp;·&nbsp; POST /new-client</div>
+    <div class="action-nodes">
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Webhook Node (POST)</div>
+          <div class="action-node-detail">Receives new client form submission</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Validation Code Node</div>
+          <div class="action-node-detail">Required fields present? Account name, owner, territory</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">AI Mapping Code Node</div>
+          <div class="action-node-detail">Maps SF fields → Epicor schema · Generates CustomerID · Sets type, segment, address</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Parallel API Calls</div>
+          <div class="action-node-detail">POST Salesforce Account API · POST Epicor Customer API (simultaneously)</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Atomicity Check Code Node</div>
+          <div class="action-node-detail">Both succeeded → write to DB · Either failed → log error, alert, rollback</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Respond to Webhook Node</div>
+          <div class="action-node-detail">Returns success or error to form · Dashboard updates within 5s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW RFQ -->
+  <div class="action-workflow">
+    <div class="action-header">Workflow 3 — New RFQ &nbsp;·&nbsp; POST /new-rfq</div>
+    <div class="action-nodes">
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Webhook Node (POST)</div>
+          <div class="action-node-detail">Receives RFQ form submission</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Validation Code Node</div>
+          <div class="action-node-detail">Required fields present? Company, contact, product interest</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">AI Customer Match Node</div>
+          <div class="action-node-detail">Query DB for existing customer match · Match on name, email domain, EIN · Return confidence score</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Routing Code Node</div>
+          <div class="action-node-detail">&gt;80% match → fast path, pre-populate fields, create SF inquiry linked to customer · No match → create new prospect inquiry, flag for qualification</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Alert Node</div>
+          <div class="action-node-detail">Notify sales rep · Fast path or new prospect — different message</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Respond to Webhook Node</div>
+          <div class="action-node-detail">Returns confirmation to form</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSE DEAL -->
+  <div class="action-workflow">
+    <div class="action-header">Workflow 4 — Close Deal &nbsp;·&nbsp; POST /close-deal</div>
+    <div class="action-nodes">
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Webhook Node (POST)</div>
+          <div class="action-node-detail">Receives close deal form with opportunity ID</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Validation Code Node</div>
+          <div class="action-node-detail">Opportunity exists? All required fields present?</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">PATCH Salesforce API</div>
+          <div class="action-node-detail">Update opportunity stage → Closed Won</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">AI Derivation Code Node</div>
+          <div class="action-node-detail">Map products → Epicor part numbers · Set ship to from billing address · Calculate need-by date · Set payment terms</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">POST Epicor Sales Order API</div>
+          <div class="action-node-detail">Create real Epicor order with derived fields</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">PATCH Salesforce API</div>
+          <div class="action-node-detail">Write Epicor order # back to SF opportunity · Confirms sync complete</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Alert + Respond Node</div>
+          <div class="action-node-detail">Alert ops: new order ready for review · Return confirmation to form</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA SERVER -->
+  <div class="action-workflow">
+    <div class="action-header">Workflow 5 — Data Server &nbsp;·&nbsp; GET /data</div>
+    <div class="action-nodes">
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Webhook Node (GET)</div>
+          <div class="action-node-detail">Dashboard requests current data</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Postgres Query Node</div>
+          <div class="action-node-detail">Read latest data from all tables · Return as unified JSON object</div>
+        </div>
+      </div>
+      <div class="action-node">
+        <div class="action-arrow">→</div>
+        <div>
+          <div class="action-node-name">Respond to Webhook Node</div>
+          <div class="action-node-detail">Return JSON to dashboard · Dashboard re-renders with live data</div>
+        </div>
+      </div>
+      <div style="margin-top:0.4rem;padding:0.4rem;background:var(--accent-light);border:1px solid var(--rule)">
+        <div class="action-node-detail" style="color:var(--blue)">
+          Note: In full production the dashboard connects directly to PostgreSQL and this workflow is not needed. Used during transition from proof of concept.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend" style="margin-top:0.8rem">
+  <span style="font-family:'DM Mono',monospace;font-size:7pt;color:var(--mid);font-weight:600">Node types:</span>
+  <div class="legend-item"><div class="legend-swatch" style="background:#e8ecf4;border-top:3px solid var(--navy)"></div>Trigger</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:white;border-top:3px solid var(--accent)"></div>HTTP Request</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:white;border-top:3px solid var(--blue)"></div>Code Node</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:white;border-top:3px solid var(--mid)"></div>Merge Node</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--good-light);border-top:3px solid var(--good)"></div>AI / Ollama</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--warn-light);border-top:3px solid var(--warn)"></div>Rule Engine</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#e8ecf4;border-top:3px solid var(--navy)"></div>PostgreSQL</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--good-light);border-top:3px solid var(--good)"></div>Respond / Query</div>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span>Lake Shore Cryotronics · AI Intelligence Platform · Production Architecture · Confidential Internal Use</span>
+  <span>n8n + Ollama + Llama 3 70B + PostgreSQL · All processing on-premises · No data leaves the network</span>
+</div>
+
+</body>
+</html>
